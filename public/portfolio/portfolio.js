@@ -4,7 +4,7 @@ const targetUserId = urlParams.get('user') || urlParams.get('id');
 document.addEventListener('DOMContentLoaded', () => {
   renderAuthNav();
   if (targetUserId !== null) loadPublicPortfolio(Number(targetUserId));
-  else { loadPortfolio(); setupAdminControls(); }
+  else { loadPortfolio(); setupMintControls(); }
 });
 
 async function loadPortfolio() {
@@ -31,7 +31,7 @@ async function loadPortfolio() {
 async function loadPublicPortfolio(userId) {
   const userMap = await getUserMap(), userName = userMap[userId] || `Citizen #${userId}`, tbody = document.getElementById('portfolioTableBody'), invCard = document.getElementById('userInventoryTableBody')?.closest('.card');
   document.querySelector('.page-header h1').textContent = `${userName}'s Portfolio`;
-  document.querySelector('.page-header p').textContent = `Public equity holdings for ${userName} (ID #${userId}).`;
+  document.querySelector('.page-header p').textContent = `Public equity holdings for ${userName}.`;
   if (invCard) invCard.style.display = 'none';
 
   try {
@@ -49,13 +49,13 @@ async function loadPublicPortfolio(userId) {
   } catch (err) { tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--danger);">${err.message}</td></tr>`; }
 }
 
-function setupAdminControls() {
-  const uid = localStorage.getItem('oe_user_id'), token = getAuthToken(), card = document.getElementById('adminCashCard');
+function setupMintControls() {
+  const uid = localStorage.getItem('oe_user_id'), token = getAuthToken(), card = document.getElementById('cashMintCard');
   if (!card || !token || Number(uid) !== 0) return;
   card.style.display = 'block';
-  card.innerHTML = `<div class="card-header"><span class="card-title" style="color: var(--accent);">⚡ Admin Cash Injection (Citizen #0)</span></div><form id="formAdminInject" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;"><div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 140px;"><label>Target</label><select id="injectTargetType" class="form-control"><option value="user">Citizen ID</option><option value="company">Company ID</option></select></div><div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 110px;"><label>Target ID</label><input type="number" id="injectTargetId" class="form-control" value="0" min="0" required /></div><div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 130px;"><label>Amount ($)</label><input type="number" id="injectAmount" class="form-control" placeholder="10000" min="1" required /></div><button type="submit" class="btn btn-primary" style="height: 38px;">Mint &amp; Inject</button></form>`;
+  card.innerHTML = `<div class="card-header"><span class="card-title" style="color: var(--accent);">⚡ Cash Minting &amp; Injection</span></div><form id="formCashMint" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;"><div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 140px;"><label>Target</label><select id="injectTargetType" class="form-control"><option value="user">Citizen ID</option><option value="company">Company ID</option></select></div><div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 110px;"><label>Target ID</label><input type="number" id="injectTargetId" class="form-control" value="0" min="0" required /></div><div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 130px;"><label>Amount ($)</label><input type="number" id="injectAmount" class="form-control" placeholder="10000" min="1" required /></div><button type="submit" class="btn btn-primary" style="height: 38px;">Mint &amp; Inject</button></form>`;
 
-  document.getElementById('formAdminInject').addEventListener('submit', async (e) => {
+  document.getElementById('formCashMint').addEventListener('submit', async (e) => {
     e.preventDefault();
     const type = document.getElementById('injectTargetType').value, targetId = Number(document.getElementById('injectTargetId').value), amount = Number(document.getElementById('injectAmount').value);
     try {

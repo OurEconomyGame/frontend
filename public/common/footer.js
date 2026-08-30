@@ -5,7 +5,7 @@ class OEFooter extends HTMLElement {
         <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap;">
           <a href="/info/" style="color: var(--text-muted); text-decoration: none;">Organization</a>
           <span>&bull;</span>
-          <a href="/contact/" style="color: var(--text-muted); text-decoration: none;">Contact Admin</a>
+          <a href="/contact/" style="color: var(--text-muted); text-decoration: none;">Contact</a>
           <span>&bull;</span>
           <a href="/privacy/" style="color: var(--text-muted); text-decoration: none;">Privacy Policy</a>
           <span>&bull;</span>

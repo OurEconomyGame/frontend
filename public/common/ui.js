@@ -17,7 +17,9 @@ function formatCash(num) {
 let _usersCache = null;
 async function getUserMap() {
   if (_usersCache) return _usersCache;
-  const map = { 0: 'Admin' };
+  const loggedName = localStorage.getItem('oe_username');
+  const loggedUid = localStorage.getItem('oe_user_id');
+  const map = { 0: (loggedUid === '0' && loggedName) ? loggedName : 'xillion' };
   try {
     const res = await fetch(`${BACKEND}/list/users`);
     const users = await res.json();
