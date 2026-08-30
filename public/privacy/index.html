@@ -16,17 +16,17 @@
     <div class="card" style="margin-bottom: 16px;">
       <h3 style="margin-bottom: 6px;">1. Information We Collect &amp; Local Storage</h3>
       <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 8px;">
-        We collect basic account credentials (username and hashed secrets) to authenticate sessions. We do not sell or monetize personal data.
+        We store account credentials (username and hashed secrets) to authenticate sessions. We never sell or monetize user data.
       </p>
       <p style="color: var(--text-muted); font-size: 0.875rem;">
-        <strong>Local Storage:</strong> We use browser <code>localStorage</code> to store session tokens (<code>oe_token</code>), handle (<code>oe_username</code>), ID (<code>oe_user_id</code>), and theme (<code>oe_theme</code>). No tracking cookies are used.
+        <strong>Local Storage:</strong> Browser <code>localStorage</code> is used for session tokens (<code>oe_token</code>), username (<code>oe_username</code>), user ID (<code>oe_user_id</code>), and UI theme (<code>oe_theme</code>). No tracking cookies are used.
       </p>
     </div>
 
     <div class="card" style="margin-bottom: 16px;">
       <h3 style="margin-bottom: 6px;">2. Server Logging &amp; Simulation Telemetry</h3>
       <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 8px;">
-        <strong>Infrastructure Logs:</strong> Web requests are processed via Google Firebase Hosting and our Bun server, which automatically log technical metadata (IP addresses, request headers, timestamps) for routing and abuse prevention.
+        <strong>Infrastructure Logs:</strong> Technical request metadata (IP addresses, request headers, timestamps) are logged automatically for routing, diagnostics, and security.
       </p>
       <p style="color: var(--text-muted); font-size: 0.875rem;">
         <strong>Public Ledger:</strong> In-game actions (founding companies, trades, orderbook depth, dividends, shifts) are recorded openly on the public simulation ledger.
@@ -34,22 +34,22 @@
     </div>
 
     <div class="card" style="margin-bottom: 16px;">
-      <h3 style="margin-bottom: 6px;">3. Account Deletion &amp; Separate Backend Policy</h3>
+      <h3 style="margin-bottom: 6px;">3. Data Erasure &amp; Succession Transfer</h3>
       <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 8px;">
-        <strong>Data Erasure:</strong> Upon request, we delete all user record data and credentials under direct database control (external CDN logs cannot be altered).
+        <strong>Account Deletion:</strong> You may delete your account at any time via your Portfolio settings, purging your credentials from the active database (external CDN logs rotate on standard retention).
       </p>
       <p style="color: var(--text-muted); font-size: 0.875rem;">
-        <strong>Separate Backend Policy:</strong> This policy governs the frontend web client. The backend server and API infrastructure operate under a separate <a href="https://github.com/OurEconomyGame/server" target="_blank" rel="noopener" style="color: var(--primary);">Backend Privacy Policy on GitHub</a>.
+        <strong>Succession Transfer:</strong> The database will never be sold. If maintainer succession occurs, data may only transfer to a successor administrator upon approval by 60% of active players, or be purged. See the <a href="https://github.com/OurEconomyGame/server" target="_blank" rel="noopener" style="color: var(--primary);">Backend Privacy Policy</a> on GitHub.
       </p>
     </div>
 
     <div class="card">
       <h3 style="margin-bottom: 6px;">4. Age Policy (13+) &amp; Revisions</h3>
       <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 8px;">
-        OurEconomy is intended solely for users aged 13 and older (COPPA / GDPR alignment).
+        OurEconomy is strictly for users aged 13 and older (COPPA/GDPR compliance).
       </p>
       <p style="color: var(--text-muted); font-size: 0.875rem;">
-        External links (such as GitHub) follow their own policies. Revisions to this policy are posted directly to this page. For inquiries, visit the <a href="https://github.com/OurEconomyGame" target="_blank" rel="noopener" style="color: var(--primary);">OurEconomyGame Organization</a>.
+        Revisions are published directly to this page. For privacy inquiries, visit <a href="/contact/" style="color: var(--primary);">Contact Admin</a> or the <a href="https://github.com/OurEconomyGame" target="_blank" rel="noopener" style="color: var(--primary);">GitHub Organization</a>.
       </p>
     </div>
   </main>
