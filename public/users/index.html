@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Citizens - OurEconomy</title><link rel="stylesheet" href="/css/style.css">
+  <script src="/common/theme.js"></script>
 </head>
 <body>
   <oe-navbar current-page="users"></oe-navbar>
@@ -13,9 +14,9 @@
     </div>
     <div id="alertBox" class="alert"></div>
     <div class="card">
-      <div class="card-header">
+      <div class="card-header" style="flex-wrap: wrap; gap: 8px;">
         <span class="card-title">Registered Citizens</span>
-        <select id="sortUsers" class="form-control" style="width: 140px; padding: 6px 10px;">
+        <select id="sortUsers" class="form-control" style="width: 130px; padding: 6px 8px;">
           <option value="id">Sort: ID</option><option value="username">Sort: Name</option>
         </select>
       </div>

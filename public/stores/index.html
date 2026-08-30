@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WebStores - OurEconomy</title><link rel="stylesheet" href="/css/style.css">
+  <script src="/common/theme.js"></script>
 </head>
 <body>
   <oe-navbar current-page="stores"></oe-navbar>
@@ -13,13 +14,13 @@
       <a href="/found/" class="btn btn-primary">+ Found WebStore ($750)</a>
     </div>
     <div id="alertBox" class="alert"></div>
-    <div id="storesGrid" class="grid-3" style="margin-bottom: 28px;"><p style="color: var(--text-muted);">Loading WebStores...</p></div>
+    <div id="storesGrid" class="grid-3" style="margin-bottom: 24px;"><p style="color: var(--text-muted);">Loading WebStores...</p></div>
 
     <div class="card">
       <div class="card-header"><span class="card-title">🏪 Set Store Food Price (CEO Only)</span></div>
-      <form id="storePriceForm" style="display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap;">
-        <div class="form-group" style="margin-bottom: 0; min-width: 200px;"><label>WebStore Company ID</label><input type="number" id="priceStoreId" class="form-control" required placeholder="Store ID" /></div>
-        <div class="form-group" style="margin-bottom: 0; min-width: 200px;"><label>New Unit Price ($)</label><input type="number" id="priceStoreValue" class="form-control" min="0.01" step="0.01" required placeholder="12.50" /></div>
+      <form id="storePriceForm" style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
+        <div class="form-group" style="margin-bottom: 0; min-width: 160px; flex: 1;"><label>WebStore ID</label><input type="number" id="priceStoreId" class="form-control" required placeholder="Store ID" /></div>
+        <div class="form-group" style="margin-bottom: 0; min-width: 160px; flex: 1;"><label>Unit Price ($)</label><input type="number" id="priceStoreValue" class="form-control" min="0.01" step="0.01" required placeholder="12.50" /></div>
         <button type="submit" class="btn btn-primary">Update Price</button>
       </form>
     </div>

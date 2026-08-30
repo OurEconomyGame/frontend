@@ -4,6 +4,7 @@
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OurEconomy - Virtual Simulation</title>
   <link rel="stylesheet" href="/css/style.css">
+  <script src="/common/theme.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 </head>
@@ -18,20 +19,12 @@
       </div>
     </div>
 
-    <div class="grid-3" style="margin-bottom: 28px;">
-      <div class="card">
-        <div class="card-header"><span class="card-title">🏢 Active Companies</span></div>
-        <div id="statCompanies" class="stat-num">-</div>
-        <p style="font-size: 0.8rem; color: var(--text-muted);">Registered enterprises</p>
-      </div>
-      <div class="card">
-        <div class="card-header"><span class="card-title">👥 Registered Citizens</span></div>
-        <div id="statUsers" class="stat-num">-</div>
-        <p style="font-size: 0.8rem; color: var(--text-muted);">Active participants</p>
-      </div>
+    <div class="grid-3" style="margin-bottom: 24px;">
+      <div class="card"><div class="card-header"><span class="card-title">🏢 Active Companies</span></div><div id="statCompanies" class="stat-num">-</div><p style="font-size: 0.8rem; color: var(--text-muted);">Registered enterprises</p></div>
+      <div class="card"><div class="card-header"><span class="card-title">👥 Registered Citizens</span></div><div id="statUsers" class="stat-num">-</div><p style="font-size: 0.8rem; color: var(--text-muted);">Active participants</p></div>
       <div class="card">
         <div class="card-header"><span class="card-title">⚡ Quick Actions</span></div>
-        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
           <a href="/found/" class="btn btn-primary btn-sm">+ Found New Company</a>
           <a href="/market/" class="btn btn-secondary btn-sm">Explore Orderbook</a>
         </div>
