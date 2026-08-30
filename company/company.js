@@ -1,4 +1,4 @@
-const BACKEND = 'https://oureconomy.server.napp9.com';
+const BACKEND = 'http://localhost:3001';
 
 const urlParams = new URLSearchParams(window.location.search);
 const companyId = urlParams.get('id');

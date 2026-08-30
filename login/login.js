@@ -1,4 +1,4 @@
-const BACKEND = 'https://oureconomy.server.napp9.com';
+const BACKEND = 'http://localhost:3001';
 
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();

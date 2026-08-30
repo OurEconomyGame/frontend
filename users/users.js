@@ -1,4 +1,4 @@
-const BACKEND = 'https://oureconomy.server.napp9.com';
+const BACKEND = 'http://localhost:3001';
 
 document.addEventListener('DOMContentLoaded', () => {
   renderAuthNav();
