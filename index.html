@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OurEconomy - Decentralized Virtual Economy</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">OE</div>
+        <div class="brand-info">
+          <h1>OurEconomy</h1>
+          <span id="appVersionBadge" class="badge-version">v0.20.0</span>
+        </div>
+      </div>
+
+      <ul class="nav-list">
+        <li class="nav-item active">
+          <button data-tab="dashboard">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            Dashboard
+          </button>
+        </li>
+        <li class="nav-item">
+          <button data-tab="companies">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-4"></path></svg>
+            Companies
+          </button>
+        </li>
+        <li class="nav-item">
+          <button data-tab="market">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            Marketplace
+          </button>
+        </li>
+        <li class="nav-item">
+          <button data-tab="stores">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            WebStores
+          </button>
+        </li>
+        <li class="nav-item">
+          <button data-tab="portfolio">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+            Portfolio
+          </button>
+        </li>
+        <li class="nav-item">
+          <button data-tab="users">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Citizens
+          </button>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="server-status">
+          <span id="serverStatusDot" class="status-dot"></span>
+          <span id="serverStatusText">Connecting...</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main View Area -->
+    <div class="main-wrapper">
+      <header class="topbar">
+        <div class="page-title">
+          <h2 id="pageTitle">Dashboard</h2>
+          <p id="pageSubtitle">Overview of economy stats and personal assets</p>
+        </div>
+
+        <div class="user-controls">
+          <!-- Guest Controls -->
+          <div id="guestControls" class="auth-box">
+            <button id="btnLoginModal" class="btn btn-secondary btn-sm">Login</button>
+            <button id="btnSignupModal" class="btn btn-primary btn-sm">Sign Up</button>
+          </div>
+
+          <!-- Authenticated Controls -->
+          <div id="authenticatedControls" class="auth-box" style="display: none;">
+            <div class="user-badge">
+              <div id="userAvatarInitial" class="user-avatar">U</div>
+              <span id="currentUsername" class="user-name">Player</span>
+            </div>
+            <button id="btnLogout" class="btn btn-secondary btn-sm">Logout</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="content-body">
+        <!-- Tab: Dashboard -->
+        <section id="tab-dashboard" class="tab-panel active">
+          <div class="grid-3" style="margin-bottom: 24px;">
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">🏢 Total Companies</span>
+              </div>
+              <div id="statTotalCompanies" class="stat-val">-</div>
+              <div class="stat-desc">Active registered enterprises</div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">👥 Total Citizens</span>
+              </div>
+              <div id="statTotalUsers" class="stat-val">-</div>
+              <div class="stat-desc">Registered economic participants</div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">⚡ Quick Actions</span>
+              </div>
+              <div style="display: flex; gap: 8px; margin-top: 12px;">
+                <button id="btnFoundModal" class="btn btn-primary btn-sm">+ Found Company</button>
+                <button id="btnSimTick" class="btn btn-secondary btn-sm">Simulate NPC Tick</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab: Companies -->
+        <section id="tab-companies" class="tab-panel">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Corporate Directory</span>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modalFound')">+ Found Company</button>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Treasury</th>
+                    <th>Shares</th>
+                    <th>CEO</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="companiesTableBody">
+                  <tr><td colspan="7" style="text-align:center; color: var(--text-muted);">Loading companies...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab: Market -->
+        <section id="tab-market" class="tab-panel">
+          <div style="margin-bottom: 16px; display: flex; align-items: center; gap: 12px;">
+            <label for="marketResourceSelect" style="font-size: 0.9rem; color: var(--text-muted);">Select Commodity:</label>
+            <select id="marketResourceSelect" class="form-control" style="width: 200px;">
+              <option value="0">Resource #0 (Electricity/Energy)</option>
+              <option value="1">Resource #1 (Water/Raw)</option>
+              <option value="2">Resource #2 (Food)</option>
+            </select>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title" style="color: var(--success);">📈 Buy Orders (Bids)</span>
+              </div>
+              <div class="table-responsive">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Price</th>
+                      <th>Quantity</th>
+                      <th>Company</th>
+                    </tr>
+                  </thead>
+                  <tbody id="marketBidsBody">
+                    <tr><td colspan="3" style="text-align:center; color: var(--text-muted);">No active bids</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title" style="color: var(--danger);">📉 Sell Offers (Asks)</span>
+              </div>
+              <div class="table-responsive">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Price</th>
+                      <th>Quantity</th>
+                      <th>Company</th>
+                    </tr>
+                  </thead>
+                  <tbody id="marketAsksBody">
+                    <tr><td colspan="3" style="text-align:center; color: var(--text-muted);">No active offers</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab: WebStores -->
+        <section id="tab-stores" class="tab-panel">
+          <div id="storesContainer" class="grid-3">
+            <p style="color: var(--text-muted);">Loading stores...</p>
+          </div>
+        </section>
+
+        <!-- Tab: Portfolio -->
+        <section id="tab-portfolio" class="tab-panel">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Your Shareholdings & Cap Table</span>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Company ID</th>
+                    <th>Company Name</th>
+                    <th>Shares Owned</th>
+                    <th>Total Shares</th>
+                    <th>Ownership %</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="portfolioTableBody">
+                  <tr><td colspan="6" style="text-align:center; color: var(--text-muted);">Please login to view portfolio</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab: Citizens -->
+        <section id="tab-users" class="tab-panel">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Registered Citizens</span>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Joined</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                  <tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Loading citizens...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div id="modalLogin" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Login</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="formLogin">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="loginUser" class="form-control" required placeholder="Username">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPass" class="form-control" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div id="modalSignup" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Create Citizen Account</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="formSignup">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="signupUser" class="form-control" required placeholder="Choose a username">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="signupPass" class="form-control" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Register</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Found Company Modal -->
+  <div id="modalFound" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Found New Company</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="formFound">
+        <div class="form-group">
+          <label>Company Name</label>
+          <input type="text" id="foundName" class="form-control" required placeholder="Acme Industries">
+        </div>
+        <div class="form-group">
+          <label>Company Type</label>
+          <select id="foundType" class="form-control" required>
+            <option value="0">Production Company ($500)</option>
+            <option value="1">Holding Company ($2,000)</option>
+            <option value="2">WebStore ($750)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Found Company</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
