@@ -1,13 +1,21 @@
 function renderCEODashboard(container, compId, token) {
   container.style.display = 'block';
+  const recipeOpts = (typeof RECIPES !== 'undefined' ? RECIPES : [
+    { id: 'water_pump', name: 'Water Pump ($200 • Output: 500 Water)' },
+    { id: 'manual_grain_farm', name: 'Manual Grain Farm ($500 • 300 Water → 150 Grain)' },
+    { id: 'geothermal_plant', name: 'Geothermal Plant ($500 • 100 Water → 200 Electricity)' },
+    { id: 'electric_water_pump', name: 'Electric Water Pump ($2,000 • 200 Electricity → 3,000 Water)' },
+    { id: 'pre_packaged_food', name: 'Pre Packaged Food ($2,000 • Elec + Water + Grain → 25 Food)' }
+  ]).map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+
   container.innerHTML = `
     <div class="card-header"><span class="card-title" style="color: var(--primary);">🛠️ CEO Controls</span></div>
     <div class="grid-2" style="margin-bottom: 16px;">
       <div style="background: var(--bg-secondary); padding: 14px; border-radius: var(--radius-md);">
         <h4 style="margin-bottom: 8px; font-size: 0.85rem;">Buy Facility</h4>
         <form id="formFacility">
-          <div class="form-group" style="margin-bottom: 8px;"><label>Recipe</label><input type="text" id="facilityRecipe" class="form-control" placeholder="water_pump" required /></div>
-          <div class="form-group" style="margin-bottom: 8px;"><label>Name</label><input type="text" id="facilityName" class="form-control" placeholder="Facility Alpha" /></div>
+          <div class="form-group" style="margin-bottom: 8px;"><label>Production Recipe</label><select id="facilityRecipe" class="form-control" required>${recipeOpts}</select></div>
+          <div class="form-group" style="margin-bottom: 8px;"><label>Name (Optional)</label><input type="text" id="facilityName" class="form-control" placeholder="Facility Alpha" /></div>
           <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;">Buy Facility</button>
         </form>
       </div>
