@@ -3,10 +3,7 @@ const companyId = urlParams.get('id');
 
 document.addEventListener('DOMContentLoaded', () => {
   renderAuthNav();
-  if (!companyId) {
-    showAlert('No company ID specified in URL query parameter.', 'danger');
-    return;
-  }
+  if (!companyId) return showAlert('No company ID specified in URL query parameter.', 'danger');
   loadCompanyDetails();
   loadShareholders();
   setupWorkShift();
@@ -28,13 +25,17 @@ async function loadCompanyDetails() {
       document.getElementById('companyTypeSubtitle').textContent = `${typeNames[c.type] || 'Enterprise'} (ID #${c.id})`;
       document.getElementById('compCash').textContent = formatCash(c.cash);
       document.getElementById('compShares').textContent = Number(c.shares_outstanding || 0).toLocaleString();
-      document.getElementById('compCeo').textContent = c.ceo ? `Citizen #${c.ceo}` : 'None';
-      document.getElementById('compFounder').textContent = c.founder_id ? `Citizen #${c.founder_id}` : 'None';
+      
+      const ceoId = (c.ceo !== undefined && c.ceo !== null) ? Number(c.ceo) : null;
+      const founderId = ((c.founder_id ?? c.founder) !== undefined && (c.founder_id ?? c.founder) !== null) ? Number(c.founder_id ?? c.founder) : null;
+
+      document.getElementById('compCeo').innerHTML = ceoId !== null ? `<a href="/users/" style="color: var(--primary);">Citizen #${ceoId}</a>` : '<span style="color: var(--text-muted);">None</span>';
+      document.getElementById('compFounder').innerHTML = founderId !== null ? `<a href="/users/" style="color: var(--primary);">Citizen #${founderId}</a>` : '<span style="color: var(--text-muted);">None</span>';
 
       const ceoCard = document.getElementById('ceoManagementCard');
-      if (c.data && ceoCard && typeof renderCEODashboard === 'function') {
-        renderCEODashboard(ceoCard, companyId, token);
-      }
+      const curUserId = localStorage.getItem('oe_user_id');
+      const isCeo = (c.data !== undefined && c.data !== null) || (curUserId !== null && ceoId !== null && Number(curUserId) === ceoId);
+      if (isCeo && ceoCard && typeof renderCEODashboard === 'function') renderCEODashboard(ceoCard, companyId, token);
     }
   } catch (err) {
     showAlert(err.message || 'Failed to load company profile', 'danger');
@@ -81,11 +82,7 @@ function setupWorkShift() {
       if (data.wage_paid !== undefined) {
         showAlert(`Shift complete! Paid wage: $${data.wage_paid}`, 'success');
         loadCompanyDetails();
-      } else {
-        showAlert(data.message || data.status || 'Work shift failed', 'danger');
-      }
-    } catch (e) {
-      showAlert(e.message, 'danger');
-    }
+      } else showAlert(data.message || data.status || 'Work shift failed', 'danger');
+    } catch (e) { showAlert(e.message, 'danger'); }
   });
 }

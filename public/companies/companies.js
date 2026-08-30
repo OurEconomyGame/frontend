@@ -38,7 +38,7 @@ async function loadCompanies() {
         <td><span class="badge ${badgeClasses[c.type] || ''}">${typeLabels[c.type] || 'Unknown'}</span></td>
         <td>${formatCash(c.cash)}</td>
         <td>${c.shares_outstanding || 0}</td>
-        <td>${c.ceo ? `Citizen #${c.ceo}` : 'None'}</td>
+        <td>${(c.ceo !== null && c.ceo !== undefined) ? `Citizen #${c.ceo}` : 'None'}</td>
         <td>
           <a href="/company/?id=${c.id}" class="btn btn-secondary btn-sm">Details</a>
           <button class="btn btn-primary btn-sm" onclick="workShift(${c.id})">Work Shift</button>
