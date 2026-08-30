@@ -1,4 +1,4 @@
-const BACKEND = 'https://oureconomy.server.napp9.com:443';
+const BACKEND = 'https://oureconomy.server.napp9.com';
 
 document.getElementById('signupForm').addEventListener('submit', async (e) => {
   e.preventDefault();

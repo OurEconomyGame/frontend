@@ -1,4 +1,4 @@
-const BACKEND = 'https://oureconomy.server.napp9.com:443';
+const BACKEND = 'https://oureconomy.server.napp9.com';
 
 document.getElementById('embedSignupForm').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -25,7 +25,6 @@ document.getElementById('embedSignupForm').addEventListener('submit', async (e) 
       alertBox.className = 'alert alert-success visible';
       alertBox.textContent = `Account created! Welcome, citizen #${data.id || ''}.`;
       
-      // Notify parent frame if embedded in an iframe
       if (window.parent && window.parent !== window) {
         window.parent.postMessage({
           type: 'OE_SIGNUP_SUCCESS',
