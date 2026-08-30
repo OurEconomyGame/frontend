@@ -1,14 +1,8 @@
 const BACKEND = 'https://oureconomy.server.napp9.com';
 
-let autoTickInterval = null;
-let isAutoTickEnabled = false;
-
 document.addEventListener('DOMContentLoaded', () => {
   renderAuthNav();
   loadStores();
-
-  document.getElementById('btnSimTick').addEventListener('click', runSimTick);
-  document.getElementById('btnAutoTick').addEventListener('click', toggleAutoTick);
   setupPriceForm();
 });
 
@@ -45,7 +39,7 @@ async function loadStores() {
     const stores = await res.json();
 
     if (!Array.isArray(stores) || stores.length === 0) {
-      grid.innerHTML = '<p style="color: var(--text-muted);">No WebStores found. Anyone can found one!</p>';
+      grid.innerHTML = '<p style="color: var(--text-muted);">No WebStores currently open. <a href="/found/" style="color: var(--primary);">Found one</a> to start selling!</p>';
       return;
     }
 
@@ -96,38 +90,6 @@ window.buyStoreFood = async function(storeId) {
     showAlert(err.message, 'danger');
   }
 };
-
-async function runSimTick() {
-  try {
-    const res = await fetch(`${BACKEND}/store/tick`, { method: 'POST' });
-    const data = await res.json();
-
-    if (data.purchased) {
-      showAlert(`NPC Consumer Tick: Purchased ${data.quantity} food units from ${data.store_name} for $${data.revenue}!`, 'success');
-      loadStores();
-    } else {
-      showAlert(data.message || 'No NPC purchase took place this tick.', 'info');
-    }
-  } catch (err) {
-    showAlert(err.message, 'danger');
-  }
-}
-
-function toggleAutoTick() {
-  isAutoTickEnabled = !isAutoTickEnabled;
-  const btn = document.getElementById('btnAutoTick');
-
-  if (isAutoTickEnabled) {
-    btn.textContent = 'Disable Auto-Tick';
-    btn.className = 'btn btn-danger';
-    runSimTick();
-    autoTickInterval = setInterval(runSimTick, 10000);
-  } else {
-    btn.textContent = 'Enable Auto-Tick (10s)';
-    btn.className = 'btn btn-secondary';
-    if (autoTickInterval) clearInterval(autoTickInterval);
-  }
-}
 
 function setupPriceForm() {
   const form = document.getElementById('storePriceForm');
