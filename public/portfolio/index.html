@@ -14,6 +14,8 @@
     </div>
     <div id="alertBox" class="alert"></div>
 
+    <div id="adminCashCard" class="card" style="display: none; margin-bottom: 24px; border-color: var(--accent);"></div>
+
     <div class="card" style="margin-bottom: 24px;">
       <div class="card-header"><span class="card-title">Corporate Shareholdings</span></div>
       <div class="table-responsive">
@@ -26,9 +28,7 @@
 
     <div class="card" id="accountDangerCard" style="display: none; border-color: rgba(239, 68, 68, 0.4);">
       <div class="card-header"><span class="card-title" style="color: var(--danger);">⚠️ Citizen Account Settings</span></div>
-      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
-        Permanently delete your citizen account and session credentials from the OurEconomy ledger.
-      </p>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">Permanently delete your citizen account and credentials.</p>
       <button id="btnDeleteUser" class="btn btn-danger btn-sm">Delete My Account</button>
     </div>
   </main>
