@@ -10,14 +10,20 @@
 
   <main class="container">
     <div class="form-card">
-      <div class="page-header" style="margin-bottom: 20px;"><h2>Create Citizen Account</h2></div>
+      <div class="page-header" style="margin-bottom: 16px;">
+        <h2>Create Citizen Account</h2>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">Must be 13 years of age or older</p>
+      </div>
       <div id="alertBox" class="alert"></div>
       <form id="signupForm">
         <div class="form-group"><label for="username">Choose Username</label><input type="text" id="username" class="form-control" required placeholder="Username" /></div>
         <div class="form-group"><label for="password">Create Password</label><input type="password" id="password" class="form-control" required placeholder="••••••••" /></div>
-        <button type="submit" class="btn btn-primary" style="width: 100%;">Register</button>
+        <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px;">
+          By registering, you confirm you are <strong>13+</strong> and agree to our <a href="/terms/" style="color: var(--primary);">Terms</a> &amp; <a href="/privacy/" style="color: var(--primary);">Privacy Policy</a>.
+        </p>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Register (13+)</button>
       </form>
-      <p style="text-align: center; margin-top: 16px; font-size: 0.85rem; color: var(--text-muted);">
+      <p style="text-align: center; margin-top: 14px; font-size: 0.85rem; color: var(--text-muted);">
         Already registered? <a href="/login/" style="color: var(--primary);">Login here</a>
       </p>
     </div>
@@ -25,11 +31,8 @@
 
   <oe-footer></oe-footer>
 
-  <script src="/common/config.js"></script>
-  <script src="/common/auth.js"></script>
-  <script src="/common/ui.js"></script>
-  <script src="/common/navbar.js"></script>
-  <script src="/common/footer.js"></script>
+  <script src="/common/config.js"></script><script src="/common/auth.js"></script><script src="/common/ui.js"></script>
+  <script src="/common/navbar.js"></script><script src="/common/footer.js"></script>
   <script src="/signup/signup.js"></script>
 </body>
 </html>
