@@ -26,6 +26,16 @@
 
     <div id="ceoManagementCard" class="card" style="display: none; margin-bottom: 24px; border-color: var(--primary);"></div>
 
+    <div id="facilitiesCard" class="card" style="margin-bottom: 24px;">
+      <div class="card-header"><span class="card-title">🏭 Production Facilities</span></div>
+      <div class="table-responsive">
+        <table>
+          <thead><tr><th>Facility</th><th>Recipe</th><th>Inputs &rarr; Output</th><th>Status</th></tr></thead>
+          <tbody id="facilitiesTableBody"><tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Loading facilities...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-header"><span class="card-title">Shareholder Cap Table</span></div>
       <div class="table-responsive">
@@ -39,12 +49,8 @@
 
   <oe-footer></oe-footer>
 
-  <script src="/common/consts.js"></script>
-  <script src="/common/auth.js"></script>
-  <script src="/common/ui.js"></script>
-  <script src="/common/navbar.js"></script>
-  <script src="/common/footer.js"></script>
-  <script src="/company/ceo.js"></script>
-  <script src="/company/company.js"></script>
+  <script src="/common/consts.js"></script><script src="/common/auth.js"></script><script src="/common/ui.js"></script>
+  <script src="/common/navbar.js"></script><script src="/common/footer.js"></script>
+  <script src="/company/ceo.js"></script><script src="/company/company.js"></script>
 </body>
 </html>
