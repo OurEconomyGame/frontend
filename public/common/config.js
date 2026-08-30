@@ -1,4 +1,4 @@
-const BACKEND = 'https://oureconomy.server.napp9.com';
+const BACKEND = 'https://server-oureconomy.napp9.com';
 
 const RESOURCES = [
   { id: 0, name: 'Resource #0 (Electricity / Energy)' },

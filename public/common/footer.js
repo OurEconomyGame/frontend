@@ -13,7 +13,7 @@ class OEFooter extends HTMLElement {
           <span>&bull;</span>
           <a href="https://github.com/OurEconomyGame" target="_blank" rel="noopener" style="color: var(--text-muted); text-decoration: none;">GitHub</a>
         </div>
-        <div>OurEconomy &bull; napp9 &bull; connected to oureconomy.server.napp9.com</div>
+        <div>OurEconomy &bull; napp9 &bull; connected to server-oureconomy.napp9.com</div>
       </footer>
     `;
   }
