@@ -1,42 +1,17 @@
-const BACKEND = 'https://oureconomy.server.napp9.com:443';
-
 document.addEventListener('DOMContentLoaded', () => {
   renderAuthNav();
   setupFoundForm();
 });
 
-function renderAuthNav() {
-  const token = localStorage.getItem('oe_token');
-  const user = localStorage.getItem('oe_username');
-  const navAuth = document.getElementById('navAuth');
-  if (!navAuth) return;
-
-  if (token) {
-    navAuth.innerHTML = `
-      <span style="font-size: 0.85rem; color: var(--text-main); font-weight: 600;">👤 ${user || 'Citizen'}</span>
-      <button id="btnLogout" class="btn btn-secondary btn-sm">Logout</button>
-    `;
-    document.getElementById('btnLogout').addEventListener('click', () => {
-      localStorage.removeItem('oe_token');
-      localStorage.removeItem('oe_username');
-      window.location.reload();
-    });
-  }
-}
-
 function setupFoundForm() {
   const form = document.getElementById('foundForm');
-  const alertBox = document.getElementById('alertBox');
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('oe_token');
-    alertBox.className = 'alert';
+    const token = getAuthToken();
 
     if (!token) {
-      alertBox.className = 'alert alert-danger visible';
-      alertBox.textContent = 'You must be logged in to found a company.';
-      return;
+      return showAlert('You must be logged in to found a company.', 'danger');
     }
 
     const name = document.getElementById('companyName').value.trim();
@@ -54,18 +29,15 @@ function setupFoundForm() {
       const data = await res.json();
 
       if (data.id) {
-        alertBox.className = 'alert alert-success visible';
-        alertBox.textContent = `Company "${name}" founded successfully (ID #${data.id})! Redirecting...`;
+        showAlert(`Company "${name}" founded successfully (ID #${data.id})! Redirecting...`, 'success');
         setTimeout(() => {
           window.location.href = `/company/?id=${data.id}`;
         }, 1200);
       } else {
-        alertBox.className = 'alert alert-danger visible';
-        alertBox.textContent = data.message || data.status || 'Failed to found company';
+        showAlert(data.message || data.status || 'Failed to found company', 'danger');
       }
     } catch (err) {
-      alertBox.className = 'alert alert-danger visible';
-      alertBox.textContent = err.message || 'Connection error';
+      showAlert(err.message || 'Connection error', 'danger');
     }
   });
 }

@@ -1,35 +1,8 @@
-const BACKEND = 'https://oureconomy.server.napp9.com:443';
-
 document.addEventListener('DOMContentLoaded', () => {
   renderAuthNav();
   loadStores();
-  setupPriceForm();
+  if (typeof setupPriceForm === 'function') setupPriceForm();
 });
-
-function renderAuthNav() {
-  const token = localStorage.getItem('oe_token');
-  const user = localStorage.getItem('oe_username');
-  const navAuth = document.getElementById('navAuth');
-  if (!navAuth) return;
-
-  if (token) {
-    navAuth.innerHTML = `
-      <span style="font-size: 0.85rem; color: var(--text-main); font-weight: 600;">👤 ${user || 'Citizen'}</span>
-      <button id="btnLogout" class="btn btn-secondary btn-sm">Logout</button>
-    `;
-    document.getElementById('btnLogout').addEventListener('click', () => {
-      localStorage.removeItem('oe_token');
-      localStorage.removeItem('oe_username');
-      window.location.reload();
-    });
-  }
-}
-
-function showAlert(msg, type = 'info') {
-  const alertBox = document.getElementById('alertBox');
-  alertBox.className = `alert alert-${type} visible`;
-  alertBox.textContent = msg;
-}
 
 async function loadStores() {
   const grid = document.getElementById('storesGrid');
@@ -50,7 +23,7 @@ async function loadStores() {
           <span class="badge badge-store">WebStore</span>
         </div>
         <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
-          Treasury: <strong>$${Number(s.cash || 0).toLocaleString()}</strong><br>
+          Treasury: <strong>${formatCash(s.cash)}</strong><br>
           Store ID: <strong>#${s.id}</strong>
         </p>
         <div style="display: flex; gap: 8px;">
@@ -66,7 +39,7 @@ async function loadStores() {
 }
 
 window.buyStoreFood = async function(storeId) {
-  const token = localStorage.getItem('oe_token');
+  const token = getAuthToken();
   if (!token) return showAlert('Please login to buy from a WebStore.', 'danger');
 
   const qtyInput = document.getElementById(`qty-store-${storeId}`);
@@ -90,36 +63,3 @@ window.buyStoreFood = async function(storeId) {
     showAlert(err.message, 'danger');
   }
 };
-
-function setupPriceForm() {
-  const form = document.getElementById('storePriceForm');
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem('oe_token');
-    if (!token) return showAlert('You must be logged in as CEO.', 'danger');
-
-    const compId = Number(document.getElementById('priceStoreId').value);
-    const price = Number(document.getElementById('priceStoreValue').value);
-
-    try {
-      const res = await fetch(`${BACKEND}/store/price`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Auth': token },
-        body: JSON.stringify({ company_id: compId, price: price })
-      });
-      const data = await res.json();
-      if (data.status === 'success' || data.price !== undefined) {
-        showAlert(`Store food price updated to $${data.price}!`, 'success');
-      } else {
-        showAlert(data.message || 'Price update failed', 'danger');
-      }
-    } catch (err) {
-      showAlert(err.message, 'danger');
-    }
-  });
-}
-
-function escapeHtml(str) {
-  if (!str) return '';
-  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}

@@ -8,10 +8,7 @@
 </head>
 <body>
   <nav class="navbar">
-    <a href="/" class="nav-brand">
-      <div class="brand-icon">OE</div>
-      <span class="brand-title">OurEconomy</span>
-    </a>
+    <a href="/" class="nav-brand"><div class="brand-icon">OE</div><span class="brand-title">OurEconomy</span></a>
     <ul class="nav-links">
       <li><a href="/">Dashboard</a></li>
       <li><a href="/companies/" class="active">Companies</a></li>
@@ -61,69 +58,14 @@
       </div>
     </div>
 
-    <!-- CEO Management Section (visible if logged in user is CEO) -->
-    <div id="ceoManagementCard" class="card" style="display: none; margin-bottom: 24px; border-color: var(--primary);">
-      <div class="card-header">
-        <span class="card-title" style="color: var(--primary);">🛠️ CEO Executive Controls</span>
-      </div>
-      <div class="grid-3">
-        <!-- Purchase Facility -->
-        <div style="background: var(--bg-secondary); padding: 16px; border-radius: var(--radius-md);">
-          <h4 style="margin-bottom: 12px; font-size: 0.9rem;">Purchase Facility</h4>
-          <form id="formFacility">
-            <div class="form-group">
-              <label>Recipe Key</label>
-              <input type="text" id="facilityRecipe" class="form-control" placeholder="water_pump" required />
-            </div>
-            <div class="form-group">
-              <label>Custom Name</label>
-              <input type="text" id="facilityName" class="form-control" placeholder="Facility Alpha" />
-            </div>
-            <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;">Buy Facility</button>
-          </form>
-        </div>
+    <div id="ceoManagementCard" class="card" style="display: none; margin-bottom: 24px; border-color: var(--primary);"></div>
 
-        <!-- Set Wage -->
-        <div style="background: var(--bg-secondary); padding: 16px; border-radius: var(--radius-md);">
-          <h4 style="margin-bottom: 12px; font-size: 0.9rem;">Set Shift Wage</h4>
-          <form id="formWage">
-            <div class="form-group">
-              <label>Wage per Shift ($)</label>
-              <input type="number" id="inputWage" class="form-control" min="0" required placeholder="50" />
-            </div>
-            <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;">Update Wage</button>
-          </form>
-        </div>
-
-        <!-- Pay Dividend -->
-        <div style="background: var(--bg-secondary); padding: 16px; border-radius: var(--radius-md);">
-          <h4 style="margin-bottom: 12px; font-size: 0.9rem;">Distribute Dividends</h4>
-          <form id="formDividend">
-            <div class="form-group">
-              <label>Total Cash Dividend ($)</label>
-              <input type="number" id="inputDividend" class="form-control" min="1" required placeholder="500" />
-            </div>
-            <button type="submit" class="btn btn-success btn-sm" style="width: 100%;">Pay Shareholders</button>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- Cap Table -->
     <div class="card">
-      <div class="card-header">
-        <span class="card-title">Shareholder Cap Table</span>
-      </div>
+      <div class="card-header"><span class="card-title">Shareholder Cap Table</span></div>
       <div class="table-responsive">
         <table>
           <thead>
-            <tr>
-              <th>Share ID</th>
-              <th>Owner ID</th>
-              <th>Entity Type</th>
-              <th>Shares Owned</th>
-              <th>Ownership %</th>
-            </tr>
+            <tr><th>Share ID</th><th>Owner ID</th><th>Entity Type</th><th>Shares Owned</th><th>Ownership %</th></tr>
           </thead>
           <tbody id="shareholdersTableBody">
             <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Loading shareholders...</td></tr>
@@ -133,10 +75,12 @@
     </div>
   </main>
 
-  <footer>
-    OurEconomy &bull; Static Frontend connected to oureconomy.server.napp9.com:443
-  </footer>
+  <footer>OurEconomy &bull; Static Frontend connected to oureconomy.server.napp9.com:443</footer>
 
+  <script src="/common/config.js"></script>
+  <script src="/common/auth.js"></script>
+  <script src="/common/ui.js"></script>
+  <script src="/company/ceo.js"></script>
   <script src="/company/company.js"></script>
 </body>
 </html>

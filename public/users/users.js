@@ -1,30 +1,8 @@
-const BACKEND = 'https://oureconomy.server.napp9.com:443';
-
 document.addEventListener('DOMContentLoaded', () => {
   renderAuthNav();
   loadUsers();
-
   document.getElementById('sortUsers').addEventListener('change', loadUsers);
 });
-
-function renderAuthNav() {
-  const token = localStorage.getItem('oe_token');
-  const user = localStorage.getItem('oe_username');
-  const navAuth = document.getElementById('navAuth');
-  if (!navAuth) return;
-
-  if (token) {
-    navAuth.innerHTML = `
-      <span style="font-size: 0.85rem; color: var(--text-main); font-weight: 600;">👤 ${user || 'Citizen'}</span>
-      <button id="btnLogout" class="btn btn-secondary btn-sm">Logout</button>
-    `;
-    document.getElementById('btnLogout').addEventListener('click', () => {
-      localStorage.removeItem('oe_token');
-      localStorage.removeItem('oe_username');
-      window.location.reload();
-    });
-  }
-}
 
 async function loadUsers() {
   const tbody = document.getElementById('usersTableBody');
@@ -56,9 +34,4 @@ async function loadUsers() {
   } catch (err) {
     tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--danger);">${err.message}</td></tr>`;
   }
-}
-
-function escapeHtml(str) {
-  if (!str) return '';
-  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }

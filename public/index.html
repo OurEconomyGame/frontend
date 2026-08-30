@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OurEconomy - Decentralized Simulation</title>
+  <title>OurEconomy - Virtual Simulation</title>
   <link rel="stylesheet" href="/css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,10 +11,7 @@
 </head>
 <body>
   <nav class="navbar">
-    <a href="/" class="nav-brand">
-      <div class="brand-icon">OE</div>
-      <span class="brand-title">OurEconomy</span>
-    </a>
+    <a href="/" class="nav-brand"><div class="brand-icon">OE</div><span class="brand-title">OurEconomy</span></a>
     <ul class="nav-links">
       <li><a href="/" class="active">Dashboard</a></li>
       <li><a href="/companies/">Companies</a></li>
@@ -43,25 +40,17 @@
 
     <div class="grid-3" style="margin-bottom: 28px;">
       <div class="card">
-        <div class="card-header">
-          <span class="card-title">🏢 Active Companies</span>
-        </div>
+        <div class="card-header"><span class="card-title">🏢 Active Companies</span></div>
         <div id="statCompanies" class="stat-num">-</div>
-        <p style="font-size: 0.8rem; color: var(--text-muted);">Registered production, holding, and webstores</p>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">Registered enterprises</p>
       </div>
-
       <div class="card">
-        <div class="card-header">
-          <span class="card-title">👥 Registered Citizens</span>
-        </div>
+        <div class="card-header"><span class="card-title">👥 Registered Citizens</span></div>
         <div id="statUsers" class="stat-num">-</div>
-        <p style="font-size: 0.8rem; color: var(--text-muted);">Active economic participants</p>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">Active participants</p>
       </div>
-
       <div class="card">
-        <div class="card-header">
-          <span class="card-title">⚡ Quick Actions</span>
-        </div>
+        <div class="card-header"><span class="card-title">⚡ Quick Actions</span></div>
         <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px;">
           <a href="/found/" class="btn btn-primary btn-sm">+ Found New Company</a>
           <a href="/market/" class="btn btn-secondary btn-sm">Explore Orderbook</a>
@@ -77,14 +66,7 @@
       <div class="table-responsive">
         <table>
           <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Treasury Cash</th>
-              <th>Shares</th>
-              <th>Action</th>
-            </tr>
+            <tr><th>ID</th><th>Name</th><th>Type</th><th>Treasury Cash</th><th>Shares</th><th>Action</th></tr>
           </thead>
           <tbody id="recentCompaniesBody">
             <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Loading...</td></tr>
@@ -94,10 +76,11 @@
     </div>
   </main>
 
-  <footer>
-    OurEconomy &bull; Static Frontend connected to oureconomy.server.napp9.com:443
-  </footer>
+  <footer>OurEconomy &bull; Static Frontend connected to oureconomy.server.napp9.com:443</footer>
 
+  <script src="/common/config.js"></script>
+  <script src="/common/auth.js"></script>
+  <script src="/common/ui.js"></script>
   <script src="/index.js"></script>
 </body>
 </html>
