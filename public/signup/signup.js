@@ -1,5 +1,3 @@
-const BACKEND = 'https://server-oureconomy.napp9.com';
-
 document.getElementById('signupForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const alertBox = document.getElementById('alertBox');
