@@ -1,20 +1,25 @@
 const urlParams = new URLSearchParams(window.location.search);
 const companyId = urlParams.get('id');
 
+function switchCompanyTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  const btn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick')?.includes(tab));
+  if (btn) btn.classList.add('active');
+  const pane = document.getElementById(`pane-${tab}`);
+  if (pane) pane.classList.add('active');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   renderAuthNav();
   if (!companyId) return showAlert('No company ID specified.', 'danger');
-  loadCompanyDetails();
-  loadShareholders();
-  setupWorkShift();
+  loadCompanyDetails(); loadShareholders(); setupWorkShift();
 });
 
 async function loadCompanyDetails() {
   const token = getAuthToken();
-  const headers = token ? { 'Auth': token } : {};
-
   try {
-    const res = await fetch(`${BACKEND}/company?id=${companyId}`, { headers });
+    const res = await fetch(`${BACKEND}/company?id=${companyId}`, { headers: token ? { 'Auth': token } : {} });
     const data = await res.json();
     const c = data.company || data;
     if (!c.name) return;
@@ -31,11 +36,13 @@ async function loadCompanyDetails() {
     document.getElementById('compFounder').innerHTML = founderId !== null ? `<a href="/users/" style="color: var(--primary);">Citizen #${founderId}</a>` : '<span style="color: var(--text-muted);">None</span>';
 
     renderFacilities(c);
+    renderInventory(c);
 
-    const ceoCard = document.getElementById('ceoManagementCard');
-    const curUserId = localStorage.getItem('oe_user_id');
-    const isCeo = (c.data !== undefined && c.data !== null) || (curUserId !== null && ceoId !== null && Number(curUserId) === ceoId);
-    if (isCeo && ceoCard && typeof renderCEODashboard === 'function') renderCEODashboard(ceoCard, companyId, token);
+    const isCeo = (c.data !== undefined && c.data !== null) || (localStorage.getItem('oe_user_id') !== null && Number(localStorage.getItem('oe_user_id')) === ceoId);
+    if (isCeo) {
+      document.getElementById('tabBtnCeo').style.display = 'block';
+      if (typeof renderCEODashboard === 'function') renderCEODashboard(document.getElementById('ceoManagementCard'), companyId, token);
+    }
   } catch (err) { showAlert(err.message || 'Failed to load profile', 'danger'); }
 }
 
@@ -43,17 +50,22 @@ function renderFacilities(c) {
   const facs = (c.data && Array.isArray(c.data.facilities)) ? c.data.facilities : (Array.isArray(c.facilities) ? c.facilities : []);
   const tbody = document.getElementById('facilitiesTableBody');
   if (!tbody) return;
-
-  if (!facs.length) {
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No facilities owned yet.</td></tr>';
-    return;
-  }
+  if (!facs.length) return tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No facilities owned yet.</td></tr>';
   const rNames = { 0: 'Food', 1: 'Water', 2: 'Grain', 3: 'Electricity', 4: 'Cement', 5: 'Metal', 6: 'RawOre' };
   tbody.innerHTML = facs.map(f => {
-    const rec = f.recipe || {};
-    const inStr = Object.entries(rec.inputs || {}).map(([r, a]) => `${a} ${rNames[r] || `R#${r}`}`).join(', ') || 'None';
-    const outStr = `${rec.amount || 0} ${rNames[rec.output] || `R#${rec.output ?? '-'}`}`;
+    const rec = f.recipe || {}, inStr = Object.entries(rec.inputs || {}).map(([r, a]) => `${a} ${rNames[r] || `R#${r}`}`).join(', ') || 'None', outStr = `${rec.amount || 0} ${rNames[rec.output] || `R#${rec.output ?? '-'}`}`;
     return `<tr><td><strong>${escapeHtml(f.name || 'Facility')}</strong><br><small style="color: var(--text-muted);">${f.id || ''}</small></td><td>${escapeHtml(rec.name || 'Standard')}</td><td><span style="color: var(--text-muted);">${inStr}</span> &rarr; <strong style="color: var(--success);">${outStr}</strong></td><td><span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">${f.active ? 'Active' : 'Inactive'} (${f.efficiency || 1}x)</span></td></tr>`;
+  }).join('');
+}
+
+function renderInventory(c) {
+  const tbody = document.getElementById('inventoryTableBody');
+  if (!tbody) return;
+  const inv = (c.data && c.data.inventory) ? c.data.inventory : (c.inventory || {});
+  const resList = typeof RESOURCES !== 'undefined' ? RESOURCES : [{ id: 0, name: 'Food' }, { id: 1, name: 'Water' }, { id: 2, name: 'Grain' }, { id: 3, name: 'Electricity' }, { id: 4, name: 'Cement' }, { id: 5, name: 'Metal' }, { id: 6, name: 'RawOre' }];
+  tbody.innerHTML = resList.map(r => {
+    const qty = Number(inv[r.id] ?? inv[String(r.id)] ?? 0);
+    return `<tr><td><code>#${r.id}</code></td><td><strong>${escapeHtml(r.name)}</strong></td><td><strong style="color: ${qty > 0 ? 'var(--success)' : 'var(--text-muted)'};">${qty.toLocaleString()}</strong></td><td><a href="/market/?resource=${r.id}" class="btn btn-secondary btn-sm">Trade on Market &rarr;</a></td></tr>`;
   }).join('');
 }
 
@@ -61,8 +73,7 @@ async function loadShareholders() {
   const tbody = document.getElementById('shareholdersTableBody');
   try {
     const res = await fetch(`${BACKEND}/company/shareholders?id=${companyId}`);
-    const data = await res.json();
-    const list = data.shareholders || [];
+    const data = await res.json(), list = data.shareholders || [];
     if (!list.length) return tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">No recorded shareholders</td></tr>';
     tbody.innerHTML = list.map(s => `<tr><td>#${s.share_id}</td><td>${s.owner_user ? `Citizen #${s.owner_id}` : `Company #${s.owner_id}`}</td><td>${s.owner_user ? 'Individual' : 'Corporate'}</td><td>${Number(s.quantity).toLocaleString()}</td><td><strong>${s.percentage}%</strong></td></tr>`).join('');
   } catch (err) { tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--danger);">${err.message}</td></tr>`; }

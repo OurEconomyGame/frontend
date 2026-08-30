@@ -10,7 +10,7 @@
 
   <main class="container">
     <div class="page-header">
-      <div><h1>Citizen Equity Portfolio</h1><p>Active corporate equity and account management.</p></div>
+      <div><h1>Citizen Equity Portfolio</h1><p>Active corporate equity, commodities inventory, and account management.</p></div>
     </div>
     <div id="alertBox" class="alert"></div>
 
@@ -22,6 +22,16 @@
         <table>
           <thead><tr><th>Company ID</th><th>Company Name</th><th>Shares Owned</th><th>Total Outstanding</th><th>Ownership %</th><th>Action</th></tr></thead>
           <tbody id="portfolioTableBody"><tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Loading portfolio...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 24px;">
+      <div class="card-header"><span class="card-title">📦 Personal Resource Inventory</span></div>
+      <div class="table-responsive">
+        <table>
+          <thead><tr><th>Resource ID</th><th>Resource Name</th><th>Personal Holdings</th><th>Action</th></tr></thead>
+          <tbody id="userInventoryTableBody"><tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Loading inventory...</td></tr></tbody>
         </table>
       </div>
     </div>
