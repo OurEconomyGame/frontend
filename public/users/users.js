@@ -22,7 +22,7 @@ async function loadUsers() {
     tbody.innerHTML = users.map(u => `
       <tr>
         <td><strong>#${u.id}</strong></td>
-        <td>${escapeHtml(u.username)}</td>
+        <td><a href="/portfolio/?user=${u.id}" style="color: var(--primary); font-weight: 600;">${escapeHtml(u.username)}</a></td>
         <td>${u.joined ? new Date(u.joined * 1000).toLocaleDateString() : '-'}</td>
         <td>
           ${u.active

@@ -19,7 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadCompanyDetails() {
   const token = getAuthToken();
   try {
-    const res = await fetch(`${BACKEND}/company?id=${companyId}`, { headers: token ? { 'Auth': token } : {} });
+    const [res, userMap] = await Promise.all([
+      fetch(`${BACKEND}/company?id=${companyId}`, { headers: token ? { 'Auth': token } : {} }),
+      getUserMap()
+    ]);
     const data = await res.json();
     const c = data.company || data;
     if (!c.name) return;
@@ -32,8 +35,9 @@ async function loadCompanyDetails() {
 
     const ceoId = (c.ceo !== undefined && c.ceo !== null) ? Number(c.ceo) : null;
     const founderId = ((c.founder_id ?? c.founder) !== undefined && (c.founder_id ?? c.founder) !== null) ? Number(c.founder_id ?? c.founder) : null;
-    document.getElementById('compCeo').innerHTML = ceoId !== null ? `<a href="/users/" style="color: var(--primary);">Citizen #${ceoId}</a>` : '<span style="color: var(--text-muted);">None</span>';
-    document.getElementById('compFounder').innerHTML = founderId !== null ? `<a href="/users/" style="color: var(--primary);">Citizen #${founderId}</a>` : '<span style="color: var(--text-muted);">None</span>';
+    
+    document.getElementById('compCeo').innerHTML = ceoId !== null ? `<a href="/portfolio/?user=${ceoId}" style="color: var(--primary); font-weight: 600;">${escapeHtml(userMap[ceoId] || `Citizen #${ceoId}`)}</a>` : '<span style="color: var(--text-muted);">None</span>';
+    document.getElementById('compFounder').innerHTML = founderId !== null ? `<a href="/portfolio/?user=${founderId}" style="color: var(--primary); font-weight: 600;">${escapeHtml(userMap[founderId] || `Citizen #${founderId}`)}</a>` : '<span style="color: var(--text-muted);">None</span>';
 
     renderFacilities(c);
     renderInventory(c);
@@ -72,10 +76,17 @@ function renderInventory(c) {
 async function loadShareholders() {
   const tbody = document.getElementById('shareholdersTableBody');
   try {
-    const res = await fetch(`${BACKEND}/company/shareholders?id=${companyId}`);
+    const [res, userMap, compMap] = await Promise.all([
+      fetch(`${BACKEND}/company/shareholders?id=${companyId}`),
+      getUserMap(),
+      getCompanyMap()
+    ]);
     const data = await res.json(), list = data.shareholders || [];
     if (!list.length) return tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">No recorded shareholders</td></tr>';
-    tbody.innerHTML = list.map(s => `<tr><td>#${s.share_id}</td><td>${s.owner_user ? `Citizen #${s.owner_id}` : `Company #${s.owner_id}`}</td><td>${s.owner_user ? 'Individual' : 'Corporate'}</td><td>${Number(s.quantity).toLocaleString()}</td><td><strong>${s.percentage}%</strong></td></tr>`).join('');
+    tbody.innerHTML = list.map(s => {
+      const ownerLabel = s.owner_user ? `<a href="/portfolio/?user=${s.owner_id}" style="color: var(--primary); font-weight: 600;">${escapeHtml(userMap[s.owner_id] || `Citizen #${s.owner_id}`)}</a>` : `<a href="/company/?id=${s.owner_id}" style="color: var(--accent); font-weight: 600;">${escapeHtml(compMap[s.owner_id] || `Company #${s.owner_id}`)}</a>`;
+      return `<tr><td>#${s.share_id}</td><td>${ownerLabel}</td><td>${s.owner_user ? 'Citizen' : 'Company'}</td><td>${Number(s.quantity).toLocaleString()}</td><td><strong>${s.percentage}%</strong></td></tr>`;
+    }).join('');
   } catch (err) { tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--danger);">${err.message}</td></tr>`; }
 }
 
