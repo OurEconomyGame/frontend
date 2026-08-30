@@ -4,7 +4,7 @@ class OENavbar extends HTMLElement {
     this.innerHTML = `
       <nav class="navbar">
         <div class="nav-header">
-          <a href="/" class="nav-brand"><div class="brand-icon">OE</div><span class="brand-title">OurEconomy</span></a>
+          <a href="/" class="nav-brand"><div class="brand-icon">N9</div><span class="brand-title">OurEconomy</span></a>
           <div class="nav-right">
             <button id="btnThemeToggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle color theme">🌓</button>
             <div class="nav-auth" id="navAuth">
@@ -21,6 +21,7 @@ class OENavbar extends HTMLElement {
           <li><a href="/stores/" class="${page === 'stores' ? 'active' : ''}">WebStores</a></li>
           <li><a href="/portfolio/" class="${page === 'portfolio' ? 'active' : ''}">Portfolio</a></li>
           <li><a href="/users/" class="${page === 'users' ? 'active' : ''}">Citizens</a></li>
+          <li><a href="/info/" class="${page === 'info' ? 'active' : ''}">Info</a></li>
         </ul>
       </nav>
     `;
