@@ -1,0 +1,1152 @@
+{
+	"openapi": "3.0.3",
+	"info": {
+		"title": "OurEconomy API",
+		"description": "API documentation for the OurEconomy backend server.",
+		"version": "0.20.0"
+	},
+	"paths": {
+		"/version": {
+			"get": {
+				"summary": "Get application version",
+				"responses": {
+					"200": {
+						"description": "Returns current API version",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"version": {
+											"type": "string",
+											"example": "0.15.0"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/docs": {
+			"get": {
+				"summary": "Scalar Interactive API Documentation (Localhost only)",
+				"responses": {
+					"200": {
+						"description": "Returns Scalar HTML API explorer"
+					},
+					"403": {
+						"description": "Forbidden if accessed remotely"
+					}
+				}
+			}
+		},
+		"/list/users": {
+			"get": {
+				"summary": "Get list of users public info",
+				"parameters": [
+					{
+						"name": "sortBy",
+						"in": "query",
+						"required": false,
+						"description": "Field to sort by ('name' or 'id')",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Returns list of public user info objects",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "number"
+											},
+											"username": {
+												"type": "string"
+											},
+											"joined": {
+												"type": "number"
+											},
+											"active": {
+												"type": "number"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/list/companies": {
+			"get": {
+				"summary": "Get list of companies with public info and optional CEO data",
+				"parameters": [
+					{
+						"name": "Auth",
+						"in": "header",
+						"required": false,
+						"description": "Optional session token to expose private company data if caller is CEO",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "sortBy",
+						"in": "query",
+						"required": false,
+						"description": "Field to sort by ('name', 'created_at', or 'id')",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "type",
+						"in": "query",
+						"required": false,
+						"description": "Filter by company type enum",
+						"schema": {
+							"type": "integer"
+						}
+					},
+					{
+						"name": "founder_id",
+						"in": "query",
+						"required": false,
+						"description": "Filter by founder user ID",
+						"schema": {
+							"type": "integer"
+						}
+					},
+					{
+						"name": "ceo",
+						"in": "query",
+						"required": false,
+						"description": "Filter by CEO user ID",
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Returns list of companies",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"properties": {
+											"id": { "type": "number" },
+											"name": { "type": "string" },
+											"founder_id": { "type": "number" },
+											"type": { "type": "number" },
+											"last_accessed": { "type": "number" },
+											"cash": {
+												"type": "number",
+												"description": "Company treasury cash balance"
+											},
+											"created_at": { "type": "number" },
+											"ceo": { "type": "number" },
+											"shares_outstanding": { "type": "number" },
+											"data": {
+												"type": "object",
+												"description": "Included only if caller is the CEO"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/company": {
+			"get": {
+				"summary": "Get single company details by ID or Name",
+				"parameters": [
+					{
+						"name": "Auth",
+						"in": "header",
+						"required": false,
+						"description": "Optional session token to expose private data if caller is CEO",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "id",
+						"in": "query",
+						"required": false,
+						"description": "Company ID",
+						"schema": {
+							"type": "integer"
+						}
+					},
+					{
+						"name": "name",
+						"in": "query",
+						"required": false,
+						"description": "Company Name",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Returns company profile",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string" },
+										"company": {
+											"type": "object",
+											"properties": {
+												"id": { "type": "number" },
+												"name": { "type": "string" },
+												"founder_id": { "type": "number" },
+												"type": { "type": "number" },
+												"last_accessed": { "type": "number" },
+												"cash": {
+													"type": "number",
+													"description": "Company treasury cash balance"
+												},
+												"created_at": { "type": "number" },
+												"ceo": { "type": "number" },
+												"shares_outstanding": { "type": "number" },
+												"data": {
+													"type": "object",
+													"description": "Included only if caller is the CEO"
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/company/shareholders": {
+			"get": {
+				"summary": "Get cap table / shareholder distribution for a company",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "query",
+						"required": false,
+						"description": "Company ID",
+						"schema": {
+							"type": "integer"
+						}
+					},
+					{
+						"name": "name",
+						"in": "query",
+						"required": false,
+						"description": "Company Name",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Returns cap table",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string" },
+										"company_id": { "type": "number" },
+										"shares_outstanding": { "type": "number" },
+										"shareholders": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"share_id": { "type": "number" },
+													"owner_id": { "type": "number" },
+													"owner_user": { "type": "boolean" },
+													"quantity": { "type": "number" },
+													"percentage": { "type": "number" }
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/portfolio": {
+			"get": {
+				"summary": "Get authenticated user's portfolio of shares across all companies",
+				"parameters": [
+					{
+						"name": "Auth",
+						"in": "header",
+						"required": true,
+						"description": "Session token for authentication",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Returns array of share holdings",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string" },
+										"portfolio": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"share_id": { "type": "number" },
+													"company_id": { "type": "number" },
+													"company_name": { "type": "string" },
+													"company_type": { "type": "number" },
+													"quantity": { "type": "number" },
+													"shares_outstanding": { "type": "number" },
+													"ownership_percentage": { "type": "number" }
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/signup": {
+			"post": {
+				"summary": "Create a new user",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["hi", "secret"],
+								"properties": {
+									"hi": {
+										"type": "string",
+										"description": "Username"
+									},
+									"secret": {
+										"type": "string",
+										"description": "Password"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "User creation status, ID, and session token",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string"
+										},
+										"id": {
+											"type": "number"
+										},
+										"random": {
+											"type": "string",
+											"description": "Session token generated for the created user"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/login": {
+			"post": {
+				"summary": "User login",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["hi", "secret"],
+								"properties": {
+									"hi": {
+										"type": "string",
+										"description": "Username"
+									},
+									"secret": {
+										"type": "string",
+										"description": "Password"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Login response status and token",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string"
+										},
+										"token": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/found": {
+			"post": {
+				"summary": "Found a new company (Costs: Production: $500, WebStore: $750, Holding: $2000)",
+				"parameters": [
+					{
+						"name": "Auth",
+						"in": "header",
+						"required": true,
+						"description": "Session token for authentication",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["name", "type"],
+								"properties": {
+									"name": {
+										"type": "string",
+										"description": "Name of the company"
+									},
+									"type": {
+										"type": "integer",
+										"enum": [0, 1, 2],
+										"description": "Company type (0: Production - $500, 1: Holding - $2000, 2: WebStore - $750)"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Company founding response with status and created company ID",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string"
+										},
+										"id": {
+											"type": "number"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/facility/buy": {
+			"post": {
+				"summary": "Purchase a facility for a production company (Costs: $200 no inputs, $500 with inputs, $2000 with electricity input)",
+				"parameters": [
+					{
+						"name": "Auth",
+						"in": "header",
+						"required": true,
+						"description": "Session token of company CEO",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["company_id", "recipe"],
+								"properties": {
+									"company_id": {
+										"type": "integer",
+										"description": "ID of the Production company"
+									},
+									"recipe": {
+										"type": "string",
+										"description": "Recipe key identifier (e.g. 'water_pump', 'geothermal_plant')"
+									},
+									"name": {
+										"type": "string",
+										"description": "Optional custom name for the facility"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Facility purchase response with status, facility ID, cost, and remaining company balance",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string"
+										},
+										"facility_id": {
+											"type": "string"
+										},
+										"cost": {
+											"type": "number"
+										},
+										"balance": {
+											"type": "number"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/company/work": {
+			"post": {
+				"summary": "Perform a daily work shift at a company (worker receives wage and triggers a random facility production cycle)",
+				"parameters": [
+					{
+						"name": "Auth",
+						"in": "header",
+						"required": true,
+						"description": "Session token of the worker",
+						"schema": { "type": "string" }
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["company_id"],
+								"properties": {
+									"company_id": { "type": "integer" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Work shift outcome, wage paid, and production cycle result",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string" },
+										"wage_paid": { "type": "number" },
+										"company_cash": { "type": "number" },
+										"user_cash": { "type": "number" },
+										"production": { "type": "object" }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/company/wage": {
+			"post": {
+				"summary": "Set the worker shift wage for a company (CEO only)",
+				"parameters": [
+					{
+						"name": "Auth",
+						"in": "header",
+						"required": true,
+						"description": "Session token of company CEO",
+						"schema": { "type": "string" }
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["company_id", "wage"],
+								"properties": {
+									"company_id": { "type": "integer" },
+									"wage": { "type": "number" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Wage update result",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string" },
+										"wage": { "type": "number" }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/company/fire": {
+			"post": {
+				"summary": "Fire a worker from the company roster (CEO only)",
+				"parameters": [
+					{
+						"name": "Auth",
+						"in": "header",
+						"required": true,
+						"description": "Session token of company CEO",
+						"schema": { "type": "string" }
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["company_id", "worker_id"],
+								"properties": {
+									"company_id": { "type": "integer" },
+									"worker_id": { "type": "integer" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Worker termination confirmation",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string" },
+										"fired_worker_id": { "type": "number" }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/company/quit": {
+			"post": {
+				"summary": "Quit employment position at a company (Worker only)",
+				"parameters": [
+					{
+						"name": "Auth",
+						"in": "header",
+						"required": true,
+						"description": "Session token of the worker",
+						"schema": { "type": "string" }
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["company_id"],
+								"properties": {
+									"company_id": { "type": "integer" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Employment resignation confirmation",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string" },
+										"quit_company_id": { "type": "number" }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/company/deposit": {
+			"post": {
+				"summary": "Deposit player cash into a company's treasury",
+				"parameters": [
+					{
+						"name": "Auth",
+						"in": "header",
+						"required": true,
+						"description": "Session token of the depositing player",
+						"schema": { "type": "string" }
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["company_id", "amount"],
+								"properties": {
+									"company_id": { "type": "integer" },
+									"amount": { "type": "number" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Deposit confirmation and updated balances",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string" },
+										"deposited": { "type": "number" },
+										"user_cash": { "type": "number" },
+										"company_cash": { "type": "number" }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/company/dividend": {
+			"post": {
+				"summary": "Distribute cash dividends pro-rata to all company shareholders (CEO only)",
+				"parameters": [
+					{
+						"name": "Auth",
+						"in": "header",
+						"required": true,
+						"description": "Session token of company CEO",
+						"schema": { "type": "string" }
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["company_id", "amount"],
+								"properties": {
+									"company_id": { "type": "integer" },
+									"amount": { "type": "number" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Dividend distribution confirmation",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string" },
+										"dividend_distributed": { "type": "number" },
+										"remaining_cash": { "type": "number" },
+										"shareholders_paid": { "type": "number" }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/store/price": {
+			"post": {
+				"summary": "Set the Food retail selling price for a WebStore (CEO only)",
+				"parameters": [
+					{
+						"name": "Auth",
+						"in": "header",
+						"required": true,
+						"description": "Session token of the WebStore CEO",
+						"schema": { "type": "string" }
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["company_id", "price"],
+								"properties": {
+									"company_id": { "type": "integer" },
+									"price": { "type": "number" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Price update confirmation",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string" },
+										"price": { "type": "number" }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/store/buy": {
+			"post": {
+				"summary": "Purchase Food from a WebStore (consumes 10 electricity + 1 electricity per food item)",
+				"parameters": [
+					{
+						"name": "Auth",
+						"in": "header",
+						"required": true,
+						"description": "Session token of the purchasing player",
+						"schema": { "type": "string" }
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["company_id", "quantity"],
+								"properties": {
+									"company_id": { "type": "integer" },
+									"quantity": { "type": "number" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Purchase confirmation, total cost, electricity consumed, and updated balances",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string" },
+										"quantity": { "type": "number" },
+										"price": { "type": "number" },
+										"total_cost": { "type": "number" },
+										"electricity_used": { "type": "number" },
+										"buyer_cash": { "type": "number" },
+										"store_cash": { "type": "number" }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/store/tick": {
+			"post": {
+				"summary": "Simulate an NPC civilian consumer purchase round (prefers cheapest WebStore, order size 1-50)",
+				"responses": {
+					"200": {
+						"description": "NPC purchase outcome, store selected, volume sold, and revenue generated",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"purchased": { "type": "boolean" },
+										"store_id": { "type": "number" },
+										"store_name": { "type": "string" },
+										"quantity": { "type": "number" },
+										"price": { "type": "number" },
+										"revenue": { "type": "number" },
+										"electricity_used": { "type": "number" },
+										"message": { "type": "string" }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/market/depth": {
+			"get": {
+				"summary": "Get orderbook depth (all buy orders and sell offers) for a resource",
+				"parameters": [
+					{
+						"name": "resource",
+						"in": "query",
+						"required": true,
+						"description": "Resource enum ID",
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Orderbook depth sorted by price priority",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string" },
+										"resource": { "type": "number" },
+										"orders": {
+											"type": "array",
+											"description": "Buy orders sorted highest to lowest price"
+										},
+										"offers": {
+											"type": "array",
+											"description": "Sell offers sorted lowest to highest price"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/market/buy": {
+			"post": {
+				"summary": "Place and execute a market buy order for a company (CEO only)",
+				"parameters": [
+					{
+						"name": "Auth",
+						"in": "header",
+						"required": true,
+						"description": "Session token of company CEO",
+						"schema": { "type": "string" }
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["company_id", "resource", "quantity", "unitPrice"],
+								"properties": {
+									"company_id": { "type": "integer" },
+									"resource": { "type": "integer" },
+									"quantity": { "type": "number" },
+									"unitPrice": { "type": "number" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Buy execution result with filled and resting quantities",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string" },
+										"filled_quantity": { "type": "number" },
+										"remaining_quantity": { "type": "number" },
+										"resting_order_id": { "type": "number" }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/market/sell": {
+			"post": {
+				"summary": "Place and execute a market sell offer for a company (CEO only)",
+				"parameters": [
+					{
+						"name": "Auth",
+						"in": "header",
+						"required": true,
+						"description": "Session token of company CEO",
+						"schema": { "type": "string" }
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["company_id", "resource", "quantity", "unitPrice"],
+								"properties": {
+									"company_id": { "type": "integer" },
+									"resource": { "type": "integer" },
+									"quantity": { "type": "number" },
+									"unitPrice": { "type": "number" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Sell execution result with filled and resting quantities",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string" },
+										"filled_quantity": { "type": "number" },
+										"remaining_quantity": { "type": "number" },
+										"resting_offer_id": { "type": "number" }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/market/cancel": {
+			"post": {
+				"summary": "Cancel an open market order or offer and release escrowed cash or resources (CEO only)",
+				"parameters": [
+					{
+						"name": "Auth",
+						"in": "header",
+						"required": true,
+						"description": "Session token of company CEO",
+						"schema": { "type": "string" }
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["company_id"],
+								"properties": {
+									"company_id": { "type": "integer" },
+									"order_id": { "type": "integer" },
+									"offer_id": { "type": "integer" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Cancellation confirmation with refunded amount",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string" },
+										"cancelled": { "type": "string" },
+										"id": { "type": "number" },
+										"refunded_cash": { "type": "number" },
+										"refunded_resource_qty": { "type": "number" }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
