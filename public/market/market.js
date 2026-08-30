@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   renderAuthNav();
+  initTradeDropdowns();
   fetchAllCommodities();
   startPolling();
 

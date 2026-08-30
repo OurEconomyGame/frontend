@@ -1,15 +1,47 @@
+async function initTradeDropdowns() {
+  const compSelect = document.getElementById('tradeCompId');
+  const cancelSelect = document.getElementById('cancelCompId');
+  const resSelect = document.getElementById('tradeResource');
+  const depthSelect = document.getElementById('selectedResourceDropdown');
+
+  if (resSelect && typeof RESOURCES !== 'undefined') {
+    resSelect.innerHTML = RESOURCES.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+  }
+  if (depthSelect && typeof RESOURCES !== 'undefined') {
+    depthSelect.innerHTML = RESOURCES.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+  }
+
+  const token = getAuthToken();
+  if (!token || !compSelect) return;
+
+  try {
+    const res = await fetch(`${BACKEND}/company/ceo`, { headers: { 'Auth': token } });
+    const data = await res.json();
+    const comps = Array.isArray(data.companies) ? data.companies : [];
+    const compOptions = comps.map(c => `<option value="${c.id}">${escapeHtml(c.name)} (#${c.id})</option>`).join('');
+
+    compSelect.innerHTML = `<option value="">Personal Consumer Sink (My Wallet)</option>${compOptions}`;
+    if (cancelSelect) cancelSelect.innerHTML = `<option value="">Personal Orders</option>${compOptions}`;
+  } catch (e) {}
+}
+
 async function executeTrade(side) {
   const token = getAuthToken();
-  if (!token) return showAlert('You must be logged in as a CEO to place market orders.', 'danger');
+  if (!token) return showAlert('Please log in to place market orders.', 'danger');
 
-  const compId = Number(document.getElementById('tradeCompId').value);
+  const compVal = document.getElementById('tradeCompId').value;
   const resource = Number(document.getElementById('tradeResource').value);
   const quantity = Number(document.getElementById('tradeQuantity').value);
   const unitPrice = Number(document.getElementById('tradePrice').value);
 
-  if (!compId || !quantity || !unitPrice) {
-    return showAlert('Please fill all trading fields.', 'danger');
+  if (!quantity || !unitPrice) return showAlert('Please enter valid quantity and price.', 'danger');
+
+  if (side === 'sell' && !compVal) {
+    return showAlert('Please select a company to place sell offers (selling requires company production).', 'danger');
   }
+
+  const body = { resource, quantity, unitPrice };
+  if (compVal) body.company_id = Number(compVal);
 
   const endpoint = side === 'buy' ? '/market/buy' : '/market/sell';
 
@@ -17,40 +49,32 @@ async function executeTrade(side) {
     const res = await fetch(`${BACKEND}${endpoint}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Auth': token },
-      body: JSON.stringify({
-        company_id: compId,
-        resource: resource,
-        quantity: quantity,
-        unitPrice: unitPrice
-      })
+      body: JSON.stringify(body)
     });
     const data = await res.json();
 
     if (data.status === 'success' || data.filled_quantity !== undefined) {
-      showAlert(`${side.toUpperCase()} Order executed! Filled: ${data.filled_quantity || 0}, Remaining: ${data.remaining_quantity || 0}`, 'success');
+      const sinkNote = data.sink ? ' (Consumer Sink)' : '';
+      showAlert(`${side.toUpperCase()}${sinkNote} executed! Filled: ${data.filled_quantity || 0}, Remaining: ${data.remaining_quantity || 0}`, 'success');
       if (typeof fetchAllCommodities === 'function') fetchAllCommodities();
-    } else {
-      showAlert(data.message || data.status || 'Trade order failed', 'danger');
-    }
-  } catch (err) {
-    showAlert(err.message, 'danger');
-  }
+      if (typeof renderAuthNav === 'function') renderAuthNav();
+    } else showAlert(data.message || data.status || 'Trade order failed', 'danger');
+  } catch (err) { showAlert(err.message, 'danger'); }
 }
 
 async function cancelTradeOrder(e) {
   e.preventDefault();
   const token = getAuthToken();
-  if (!token) return showAlert('You must be logged in as a CEO to cancel orders.', 'danger');
+  if (!token) return showAlert('Please log in to cancel orders.', 'danger');
 
-  const compId = Number(document.getElementById('cancelCompId').value);
+  const compVal = document.getElementById('cancelCompId').value;
   const orderId = document.getElementById('cancelOrderId').value;
   const offerId = document.getElementById('cancelOfferId').value;
 
-  if (!compId || (!orderId && !offerId)) {
-    return showAlert('Please enter Company ID and either Order ID or Offer ID.', 'danger');
-  }
+  if (!orderId && !offerId) return showAlert('Please enter either Order ID (Buy) or Offer ID (Sell).', 'danger');
 
-  const body = { company_id: compId };
+  const body = {};
+  if (compVal) body.company_id = Number(compVal);
   if (orderId) body.order_id = Number(orderId);
   if (offerId) body.offer_id = Number(offerId);
 
@@ -65,10 +89,6 @@ async function cancelTradeOrder(e) {
     if (data.status === 'success' || data.cancelled) {
       showAlert(`Order cancelled! Refunded Cash: $${data.refunded_cash || 0}, Refunded Resources: ${data.refunded_resource_qty || 0}`, 'success');
       if (typeof fetchAllCommodities === 'function') fetchAllCommodities();
-    } else {
-      showAlert(data.message || data.status || 'Cancellation failed', 'danger');
-    }
-  } catch (err) {
-    showAlert(err.message, 'danger');
-  }
+    } else showAlert(data.message || data.status || 'Cancellation failed', 'danger');
+  } catch (err) { showAlert(err.message, 'danger'); }
 }

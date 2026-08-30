@@ -25,10 +25,8 @@
 
     <div class="card" style="margin-bottom: 24px;">
       <div class="card-header">
-        <span class="card-title" id="selectedResourceTitle">📖 Orderbook Depth: Resource #0 (Electricity)</span>
-        <select id="selectedResourceDropdown" class="form-control" style="width: 200px; padding: 4px 8px;">
-          <option value="0">Resource #0 (Electricity)</option><option value="1">Resource #1 (Water/Raw)</option><option value="2">Resource #2 (Food)</option>
-        </select>
+        <span class="card-title" id="selectedResourceTitle">📖 Orderbook Depth</span>
+        <select id="selectedResourceDropdown" class="form-control" style="width: 200px; padding: 4px 8px;"></select>
       </div>
       <div class="grid-2">
         <div><h4 style="color: var(--success); margin-bottom: 8px; font-size: 0.9rem;">📈 Buy Orders (Bids)</h4><div class="table-responsive"><table><thead><tr><th>Unit Price</th><th>Quantity</th><th>Company</th></tr></thead><tbody id="bidsTableBody"><tr><td colspan="3" style="text-align: center; color: var(--text-muted);">No active bids</td></tr></tbody></table></div></div>
@@ -38,17 +36,20 @@
 
     <div class="grid-2">
       <div class="card">
-        <div class="card-header"><span class="card-title">💼 Place Limit Order (CEO Only)</span></div>
+        <div class="card-header"><span class="card-title">💼 Place Limit Order / Consumer Sink</span></div>
         <form id="tradeForm">
-          <div class="grid-2"><div class="form-group"><label>Company ID</label><input type="number" id="tradeCompId" class="form-control" required placeholder="Company ID" /></div><div class="form-group"><label>Commodity</label><select id="tradeResource" class="form-control"><option value="0">Resource #0 (Electricity)</option><option value="1">Resource #1 (Water/Raw)</option><option value="2">Resource #2 (Food)</option></select></div></div>
+          <div class="grid-2">
+            <div class="form-group"><label>Trading Entity</label><select id="tradeCompId" class="form-control"><option value="">Personal Consumer Sink (My Wallet)</option></select></div>
+            <div class="form-group"><label>Commodity</label><select id="tradeResource" class="form-control"></select></div>
+          </div>
           <div class="grid-2"><div class="form-group"><label>Quantity</label><input type="number" id="tradeQuantity" class="form-control" min="1" required placeholder="10" /></div><div class="form-group"><label>Unit Price ($)</label><input type="number" id="tradePrice" class="form-control" min="0.01" step="0.01" required placeholder="5.00" /></div></div>
-          <div style="display: flex; gap: 10px; margin-top: 8px;"><button type="button" id="btnMarketBuy" class="btn btn-success" style="flex: 1;">Place Buy Order</button><button type="button" id="btnMarketSell" class="btn btn-danger" style="flex: 1;">Place Sell Offer</button></div>
+          <div style="display: flex; gap: 10px; margin-top: 8px;"><button type="button" id="btnMarketBuy" class="btn btn-success" style="flex: 1;">Place Buy Order / Sink</button><button type="button" id="btnMarketSell" class="btn btn-danger" style="flex: 1;">Place Sell Offer</button></div>
         </form>
       </div>
       <div class="card">
         <div class="card-header"><span class="card-title">🚫 Cancel Order / Refund Escrow</span></div>
         <form id="cancelForm">
-          <div class="form-group"><label>Company ID</label><input type="number" id="cancelCompId" class="form-control" required placeholder="Company ID" /></div>
+          <div class="form-group"><label>Trading Entity</label><select id="cancelCompId" class="form-control"><option value="">Personal Orders</option></select></div>
           <div class="grid-2"><div class="form-group"><label>Order ID (Buy)</label><input type="number" id="cancelOrderId" class="form-control" placeholder="Order ID" /></div><div class="form-group"><label>Offer ID (Sell)</label><input type="number" id="cancelOfferId" class="form-control" placeholder="Offer ID" /></div></div>
           <button type="submit" class="btn btn-secondary" style="width: 100%; margin-top: 8px;">Cancel & Release Escrow</button>
         </form>
