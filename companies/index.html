@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Companies - OurEconomy</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="nav-brand">
+      <div class="brand-icon">OE</div>
+      <span class="brand-title">OurEconomy</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Dashboard</a></li>
+      <li><a href="/companies/" class="active">Companies</a></li>
+      <li><a href="/found/">Found</a></li>
+      <li><a href="/market/">Market</a></li>
+      <li><a href="/stores/">WebStores</a></li>
+      <li><a href="/portfolio/">Portfolio</a></li>
+      <li><a href="/users/">Citizens</a></li>
+    </ul>
+    <div class="nav-auth" id="navAuth">
+      <a href="/login/" class="btn btn-secondary btn-sm">Login</a>
+      <a href="/signup/" class="btn btn-primary btn-sm">Sign Up</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="page-header">
+      <div>
+        <h1>Corporate Registry</h1>
+        <p>Browse companies, inspect balance sheets, or work shifts to earn wages.</p>
+      </div>
+      <a href="/found/" class="btn btn-primary">+ Found Company</a>
+    </div>
+
+    <div id="alertBox" class="alert"></div>
+
+    <div class="card" style="margin-bottom: 20px;">
+      <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <label style="font-size: 0.85rem; color: var(--text-muted);">Sort by:</label>
+        <select id="sortSelect" class="form-control" style="width: 160px;">
+          <option value="id">ID</option>
+          <option value="name">Name</option>
+          <option value="created_at">Creation Date</option>
+        </select>
+
+        <label style="font-size: 0.85rem; color: var(--text-muted); margin-left: 12px;">Type:</label>
+        <select id="typeSelect" class="form-control" style="width: 180px;">
+          <option value="">All Types</option>
+          <option value="0">Production</option>
+          <option value="1">Holding</option>
+          <option value="2">WebStore</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Treasury</th>
+              <th>Shares</th>
+              <th>CEO</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="companiesTableBody">
+            <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Loading companies...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    OurEconomy &bull; Static Frontend connected to oureconomy.server.napp9.com
+  </footer>
+
+  <script src="/companies/companies.js"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citizens - OurEconomy</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="nav-brand">
+      <div class="brand-icon">OE</div>
+      <span class="brand-title">OurEconomy</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Dashboard</a></li>
+      <li><a href="/companies/">Companies</a></li>
+      <li><a href="/found/">Found</a></li>
+      <li><a href="/market/">Market</a></li>
+      <li><a href="/stores/">WebStores</a></li>
+      <li><a href="/portfolio/">Portfolio</a></li>
+      <li><a href="/users/" class="active">Citizens</a></li>
+    </ul>
+    <div class="nav-auth" id="navAuth">
+      <a href="/login/" class="btn btn-secondary btn-sm">Login</a>
+      <a href="/signup/" class="btn btn-primary btn-sm">Sign Up</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="page-header">
+      <div>
+        <h1>Citizen Directory</h1>
+        <p>Registered participants across the virtual economy.</p>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <label for="sortUsers" style="font-size: 0.85rem; color: var(--text-muted);">Sort by:</label>
+        <select id="sortUsers" class="form-control" style="width: 140px;">
+          <option value="id">Citizen ID</option>
+          <option value="name">Username</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Citizen ID</th>
+              <th>Username</th>
+              <th>Date Joined</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Loading citizen registry...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    OurEconomy &bull; Static Frontend connected to oureconomy.server.napp9.com
+  </footer>
+
+  <script src="/users/users.js"></script>
+</body>
+</html>

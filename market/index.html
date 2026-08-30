@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Commodity Market - OurEconomy</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="nav-brand">
+      <div class="brand-icon">OE</div>
+      <span class="brand-title">OurEconomy</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Dashboard</a></li>
+      <li><a href="/companies/">Companies</a></li>
+      <li><a href="/found/">Found</a></li>
+      <li><a href="/market/" class="active">Market</a></li>
+      <li><a href="/stores/">WebStores</a></li>
+      <li><a href="/portfolio/">Portfolio</a></li>
+      <li><a href="/users/">Citizens</a></li>
+    </ul>
+    <div class="nav-auth" id="navAuth">
+      <a href="/login/" class="btn btn-secondary btn-sm">Login</a>
+      <a href="/signup/" class="btn btn-primary btn-sm">Sign Up</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="page-header">
+      <div>
+        <h1>Commodity Orderbook</h1>
+        <p>Real-time B2B raw materials and energy trading market.</p>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <label for="resourceSelect" style="font-size: 0.85rem; color: var(--text-muted);">Resource:</label>
+        <select id="resourceSelect" class="form-control" style="width: 220px;">
+          <option value="0">Resource #0 (Electricity)</option>
+          <option value="1">Resource #1 (Water / Raw)</option>
+          <option value="2">Resource #2 (Food)</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="alertBox" class="alert"></div>
+
+    <div class="grid-2" style="margin-bottom: 28px;">
+      <!-- Bids -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title" style="color: var(--success);">📈 Buy Orders (Bids)</span>
+        </div>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Unit Price</th>
+                <th>Quantity</th>
+                <th>Buyer Company</th>
+              </tr>
+            </thead>
+            <tbody id="bidsTableBody">
+              <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Loading bids...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Asks -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title" style="color: var(--danger);">📉 Sell Offers (Asks)</span>
+        </div>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Unit Price</th>
+                <th>Quantity</th>
+                <th>Seller Company</th>
+              </tr>
+            </thead>
+            <tbody id="asksTableBody">
+              <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Loading asks...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trade Execution Form -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">💼 Place Corporate Trade Order (CEO Only)</span>
+      </div>
+      <form id="tradeForm" class="grid-4" style="align-items: flex-end;">
+        <div class="form-group" style="margin-bottom: 0;">
+          <label>Your Company ID</label>
+          <input type="number" id="tradeCompId" class="form-control" required placeholder="Company ID" />
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label>Quantity</label>
+          <input type="number" id="tradeQuantity" class="form-control" min="1" required placeholder="10" />
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label>Limit Unit Price ($)</label>
+          <input type="number" id="tradePrice" class="form-control" min="0.01" step="0.01" required placeholder="5.00" />
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" id="btnMarketBuy" class="btn btn-success" style="flex: 1;">Buy Order</button>
+          <button type="button" id="btnMarketSell" class="btn btn-danger" style="flex: 1;">Sell Offer</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    OurEconomy &bull; Static Frontend connected to oureconomy.server.napp9.com
+  </footer>
+
+  <script src="/market/market.js"></script>
+</body>
+</html>
