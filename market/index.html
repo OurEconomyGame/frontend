@@ -30,88 +30,162 @@
   <main class="container">
     <div class="page-header">
       <div>
-        <h1>Commodity Orderbook</h1>
-        <p>Real-time B2B raw materials and energy trading market.</p>
+        <h1>Commodity Exchange</h1>
+        <p>Live orderbook depth and quotes across all economy resources.</p>
       </div>
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <label for="resourceSelect" style="font-size: 0.85rem; color: var(--text-muted);">Resource:</label>
-        <select id="resourceSelect" class="form-control" style="width: 220px;">
-          <option value="0">Resource #0 (Electricity)</option>
-          <option value="1">Resource #1 (Water / Raw)</option>
-          <option value="2">Resource #2 (Food)</option>
-        </select>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-size: 0.8rem; color: var(--text-muted);">
+          Live Stream: <span id="pollingDot" class="status-dot online"></span> <span id="pollingStatus">Active (3s)</span>
+        </span>
+        <button id="btnTogglePolling" class="btn btn-secondary btn-sm">Pause Feed</button>
       </div>
     </div>
 
     <div id="alertBox" class="alert"></div>
 
-    <div class="grid-2" style="margin-bottom: 28px;">
-      <!-- Bids -->
-      <div class="card">
-        <div class="card-header">
-          <span class="card-title" style="color: var(--success);">📈 Buy Orders (Bids)</span>
-        </div>
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>Unit Price</th>
-                <th>Quantity</th>
-                <th>Buyer Company</th>
-              </tr>
-            </thead>
-            <tbody id="bidsTableBody">
-              <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Loading bids...</td></tr>
-            </tbody>
-          </table>
+    <!-- All Commodities Summary Table -->
+    <div class="card" style="margin-bottom: 28px;">
+      <div class="card-header">
+        <span class="card-title">📊 All Commodities Overview</span>
+        <span style="font-size: 0.75rem; color: var(--text-muted);">Updated automatically</span>
+      </div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Resource</th>
+              <th>Best Bid (Buy)</th>
+              <th>Best Ask (Sell)</th>
+              <th>Spread</th>
+              <th>Total Bids Qty</th>
+              <th>Total Asks Qty</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="commoditiesSummaryBody">
+            <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Fetching market data...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Detailed Orderbook for Selected Commodity -->
+    <div class="card" style="margin-bottom: 28px;">
+      <div class="card-header">
+        <span class="card-title" id="selectedResourceTitle">📖 Orderbook Depth: Resource #0 (Electricity)</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <label style="font-size: 0.8rem; color: var(--text-muted);">Select Depth View:</label>
+          <select id="selectedResourceDropdown" class="form-control" style="width: 180px; padding: 4px 8px;">
+            <option value="0">Resource #0 (Electricity)</option>
+            <option value="1">Resource #1 (Water/Raw)</option>
+            <option value="2">Resource #2 (Food)</option>
+          </select>
         </div>
       </div>
 
-      <!-- Asks -->
-      <div class="card">
-        <div class="card-header">
-          <span class="card-title" style="color: var(--danger);">📉 Sell Offers (Asks)</span>
+      <div class="grid-2">
+        <!-- Bids -->
+        <div>
+          <h4 style="color: var(--success); margin-bottom: 10px; font-size: 0.9rem;">📈 Buy Orders (Bids)</h4>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Unit Price</th>
+                  <th>Quantity</th>
+                  <th>Company</th>
+                </tr>
+              </thead>
+              <tbody id="bidsTableBody">
+                <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">No active bids</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>Unit Price</th>
-                <th>Quantity</th>
-                <th>Seller Company</th>
-              </tr>
-            </thead>
-            <tbody id="asksTableBody">
-              <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Loading asks...</td></tr>
-            </tbody>
-          </table>
+
+        <!-- Asks -->
+        <div>
+          <h4 style="color: var(--danger); margin-bottom: 10px; font-size: 0.9rem;">📉 Sell Offers (Asks)</h4>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Unit Price</th>
+                  <th>Quantity</th>
+                  <th>Company</th>
+                </tr>
+              </thead>
+              <tbody id="asksTableBody">
+                <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">No active offers</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Trade Execution Form -->
-    <div class="card">
-      <div class="card-header">
-        <span class="card-title">💼 Place Corporate Trade Order (CEO Only)</span>
+    <!-- Trade Execution & Order Cancellation -->
+    <div class="grid-2">
+      <!-- Trade Placement -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">💼 Place Limit Order (CEO Only)</span>
+        </div>
+        <form id="tradeForm">
+          <div class="grid-2">
+            <div class="form-group">
+              <label>Company ID</label>
+              <input type="number" id="tradeCompId" class="form-control" required placeholder="Your Company ID" />
+            </div>
+            <div class="form-group">
+              <label>Commodity</label>
+              <select id="tradeResource" class="form-control">
+                <option value="0">Resource #0 (Electricity)</option>
+                <option value="1">Resource #1 (Water/Raw)</option>
+                <option value="2">Resource #2 (Food)</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="form-group">
+              <label>Quantity</label>
+              <input type="number" id="tradeQuantity" class="form-control" min="1" required placeholder="10" />
+            </div>
+            <div class="form-group">
+              <label>Unit Price ($)</label>
+              <input type="number" id="tradePrice" class="form-control" min="0.01" step="0.01" required placeholder="5.00" />
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px; margin-top: 8px;">
+            <button type="button" id="btnMarketBuy" class="btn btn-success" style="flex: 1;">Place Buy Order</button>
+            <button type="button" id="btnMarketSell" class="btn btn-danger" style="flex: 1;">Place Sell Offer</button>
+          </div>
+        </form>
       </div>
-      <form id="tradeForm" class="grid-4" style="align-items: flex-end;">
-        <div class="form-group" style="margin-bottom: 0;">
-          <label>Your Company ID</label>
-          <input type="number" id="tradeCompId" class="form-control" required placeholder="Company ID" />
+
+      <!-- Cancel Order -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🚫 Cancel Order / Refund Escrow</span>
         </div>
-        <div class="form-group" style="margin-bottom: 0;">
-          <label>Quantity</label>
-          <input type="number" id="tradeQuantity" class="form-control" min="1" required placeholder="10" />
-        </div>
-        <div class="form-group" style="margin-bottom: 0;">
-          <label>Limit Unit Price ($)</label>
-          <input type="number" id="tradePrice" class="form-control" min="0.01" step="0.01" required placeholder="5.00" />
-        </div>
-        <div style="display: flex; gap: 8px;">
-          <button type="button" id="btnMarketBuy" class="btn btn-success" style="flex: 1;">Buy Order</button>
-          <button type="button" id="btnMarketSell" class="btn btn-danger" style="flex: 1;">Sell Offer</button>
-        </div>
-      </form>
+        <form id="cancelForm">
+          <div class="form-group">
+            <label>Company ID</label>
+            <input type="number" id="cancelCompId" class="form-control" required placeholder="Company ID" />
+          </div>
+          <div class="grid-2">
+            <div class="form-group">
+              <label>Order ID (Buy)</label>
+              <input type="number" id="cancelOrderId" class="form-control" placeholder="Order ID" />
+            </div>
+            <div class="form-group">
+              <label>Offer ID (Sell)</label>
+              <input type="number" id="cancelOfferId" class="form-control" placeholder="Offer ID" />
+            </div>
+          </div>
+          <button type="submit" class="btn btn-secondary" style="width: 100%; margin-top: 8px;">Cancel & Release Escrow</button>
+        </form>
+      </div>
     </div>
   </main>
 

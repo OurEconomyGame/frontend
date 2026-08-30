@@ -1,10 +1,14 @@
 const BACKEND = 'https://oureconomy.server.napp9.com';
 
+let autoTickInterval = null;
+let isAutoTickEnabled = false;
+
 document.addEventListener('DOMContentLoaded', () => {
   renderAuthNav();
   loadStores();
 
   document.getElementById('btnSimTick').addEventListener('click', runSimTick);
+  document.getElementById('btnAutoTick').addEventListener('click', toggleAutoTick);
   setupPriceForm();
 });
 
@@ -35,7 +39,6 @@ function showAlert(msg, type = 'info') {
 
 async function loadStores() {
   const grid = document.getElementById('storesGrid');
-  grid.innerHTML = '<p style="color: var(--text-muted);">Loading stores...</p>';
 
   try {
     const res = await fetch(`${BACKEND}/list/companies?type=2`);
@@ -107,6 +110,22 @@ async function runSimTick() {
     }
   } catch (err) {
     showAlert(err.message, 'danger');
+  }
+}
+
+function toggleAutoTick() {
+  isAutoTickEnabled = !isAutoTickEnabled;
+  const btn = document.getElementById('btnAutoTick');
+
+  if (isAutoTickEnabled) {
+    btn.textContent = 'Disable Auto-Tick';
+    btn.className = 'btn btn-danger';
+    runSimTick();
+    autoTickInterval = setInterval(runSimTick, 10000);
+  } else {
+    btn.textContent = 'Enable Auto-Tick (10s)';
+    btn.className = 'btn btn-secondary';
+    if (autoTickInterval) clearInterval(autoTickInterval);
   }
 }
 
