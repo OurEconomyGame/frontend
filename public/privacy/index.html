@@ -13,34 +13,44 @@
       <div><h1>Privacy Policy</h1><p>Last updated: August 2026</p></div>
     </div>
 
-    <div class="card" style="margin-bottom: 20px;">
-      <h3 style="margin-bottom: 8px;">1. Information We Collect</h3>
-      <p style="color: var(--text-muted); font-size: 0.9rem;">
-        OurEconomy collects minimal user identifier credentials (username and hashed passwords) to authenticate participant sessions and maintain gameplay state. We do not sell or monetize personal user data.
+    <div class="card" style="margin-bottom: 16px;">
+      <h3 style="margin-bottom: 6px;">1. Information We Collect &amp; Local Storage</h3>
+      <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 8px;">
+        We collect basic account credentials (username and hashed secrets) to authenticate sessions. We do not sell or monetize personal data.
+      </p>
+      <p style="color: var(--text-muted); font-size: 0.875rem;">
+        <strong>Local Storage:</strong> We use browser <code>localStorage</code> to store session tokens (<code>oe_token</code>), your handle (<code>oe_username</code>), user ID (<code>oe_user_id</code>), and UI color theme (<code>oe_theme</code>). No tracking cookies are used.
       </p>
     </div>
 
-    <div class="card" style="margin-bottom: 20px;">
-      <h3 style="margin-bottom: 8px;">2. Simulation Telemetry & Logs</h3>
-      <p style="color: var(--text-muted); font-size: 0.9rem;">
-        In-game economic transactions, corporate dividends, orderbook bids, and facility purchases are recorded publicly on the simulation ledger for auditability and leaderboard transparency.
+    <div class="card" style="margin-bottom: 16px;">
+      <h3 style="margin-bottom: 6px;">2. Server Logging &amp; Simulation Telemetry</h3>
+      <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 8px;">
+        <strong>Infrastructure Logs:</strong> Web requests are processed via Google Firebase Hosting and our Bun server, which automatically log technical metadata (IP addresses, request headers, timestamps) for routing, performance, and abuse prevention.
+      </p>
+      <p style="color: var(--text-muted); font-size: 0.875rem;">
+        <strong>Public Ledger:</strong> In-game actions (founding companies, trades, orderbook depth, dividends, and shift records) are recorded openly on the public simulation ledger.
+      </p>
+    </div>
+
+    <div class="card" style="margin-bottom: 16px;">
+      <h3 style="margin-bottom: 6px;">3. Account Deletion &amp; Data Erasure</h3>
+      <p style="color: var(--text-muted); font-size: 0.875rem;">
+        Upon request, we will delete all user record data and authentication credentials under our direct database control. Note that we cannot modify or purge external logs maintained by third-party infrastructure (such as Google Firebase CDN logs or network transit archives).
       </p>
     </div>
 
     <div class="card">
-      <h3 style="margin-bottom: 8px;">3. Contact & Security</h3>
-      <p style="color: var(--text-muted); font-size: 0.9rem;">
-        For privacy questions or security inquiries regarding napp9 services, open an issue on the <a href="https://github.com/OurEconomyGame" target="_blank" rel="noopener" style="color: var(--primary);">OurEconomyGame Organization</a> repository.
+      <h3 style="margin-bottom: 6px;">4. Age Policy &amp; Inquiries</h3>
+      <p style="color: var(--text-muted); font-size: 0.875rem;">
+        Under privacy laws (e.g. US COPPA / EU GDPR), services processing data of minors under 13 require parental consent. We do not knowingly collect personal data from children under 13 without parental guidance. For data requests, open an issue on the <a href="https://github.com/OurEconomyGame" target="_blank" rel="noopener" style="color: var(--primary);">OurEconomyGame Organization</a>.
       </p>
     </div>
   </main>
 
   <oe-footer></oe-footer>
 
-  <script src="/common/config.js"></script>
-  <script src="/common/auth.js"></script>
-  <script src="/common/ui.js"></script>
-  <script src="/common/navbar.js"></script>
-  <script src="/common/footer.js"></script>
+  <script src="/common/config.js"></script><script src="/common/auth.js"></script><script src="/common/ui.js"></script>
+  <script src="/common/navbar.js"></script><script src="/common/footer.js"></script>
 </body>
 </html>
