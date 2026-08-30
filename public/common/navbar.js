@@ -3,15 +3,11 @@ class OENavbar extends HTMLElement {
     const page = this.getAttribute('current-page') || '';
     this.innerHTML = `
       <nav class="navbar">
-        <div class="nav-header">
-          <a href="/" class="nav-brand"><div class="brand-icon">N9</div><span class="brand-title">OurEconomy</span></a>
-          <div class="nav-right">
-            <button id="btnThemeToggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle color theme">🌓</button>
-            <div class="nav-auth" id="navAuth">
-              <a href="/login/" class="btn btn-secondary btn-sm">Login</a>
-              <a href="/signup/" class="btn btn-primary btn-sm">Sign Up</a>
-            </div>
-          </div>
+        <div class="nav-brand-container">
+          <a href="/" class="nav-brand">
+            <div class="brand-icon">N9</div>
+            <span class="brand-title">OurEconomy</span>
+          </a>
         </div>
         <ul class="nav-links">
           <li><a href="/" class="${page === 'dashboard' ? 'active' : ''}">Dashboard</a></li>
@@ -23,6 +19,13 @@ class OENavbar extends HTMLElement {
           <li><a href="/users/" class="${page === 'users' ? 'active' : ''}">Citizens</a></li>
           <li><a href="/info/" class="${page === 'info' ? 'active' : ''}">Info</a></li>
         </ul>
+        <div class="nav-right">
+          <button id="btnThemeToggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle color theme">🌓</button>
+          <div class="nav-auth" id="navAuth">
+            <a href="/login/" class="btn btn-secondary btn-sm">Login</a>
+            <a href="/signup/" class="btn btn-primary btn-sm">Sign Up</a>
+          </div>
+        </div>
       </nav>
     `;
     if (typeof renderAuthNav === 'function') renderAuthNav();
