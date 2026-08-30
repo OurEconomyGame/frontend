@@ -1,38 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OurEconomy - Virtual Simulation</title>
   <link rel="stylesheet" href="/css/style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <nav class="navbar">
-    <a href="/" class="nav-brand"><div class="brand-icon">OE</div><span class="brand-title">OurEconomy</span></a>
-    <ul class="nav-links">
-      <li><a href="/" class="active">Dashboard</a></li>
-      <li><a href="/companies/">Companies</a></li>
-      <li><a href="/found/">Found</a></li>
-      <li><a href="/market/">Market</a></li>
-      <li><a href="/stores/">WebStores</a></li>
-      <li><a href="/portfolio/">Portfolio</a></li>
-      <li><a href="/users/">Citizens</a></li>
-    </ul>
-    <div class="nav-auth" id="navAuth">
-      <a href="/login/" class="btn btn-secondary btn-sm">Login</a>
-      <a href="/signup/" class="btn btn-primary btn-sm">Sign Up</a>
-    </div>
-  </nav>
+  <oe-navbar current-page="dashboard"></oe-navbar>
 
   <main class="container">
     <div class="page-header">
-      <div>
-        <h1>Virtual Economy Overview</h1>
-        <p>Real-time simulation, corporate governance, and commodity trading.</p>
-      </div>
+      <div><h1>Virtual Economy Overview</h1><p>Real-time simulation, corporate governance, and commodity trading.</p></div>
       <div style="font-size: 0.85rem; color: var(--text-muted);">
         Server Status: <span id="statusIndicator" class="status-dot"></span> <span id="statusText">Checking...</span>
       </div>
@@ -65,22 +45,20 @@
       </div>
       <div class="table-responsive">
         <table>
-          <thead>
-            <tr><th>ID</th><th>Name</th><th>Type</th><th>Treasury Cash</th><th>Shares</th><th>Action</th></tr>
-          </thead>
-          <tbody id="recentCompaniesBody">
-            <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Loading...</td></tr>
-          </tbody>
+          <thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Treasury Cash</th><th>Shares</th><th>Action</th></tr></thead>
+          <tbody id="recentCompaniesBody"><tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Loading...</td></tr></tbody>
         </table>
       </div>
     </div>
   </main>
 
-  <footer>OurEconomy &bull; Static Frontend connected to oureconomy.server.napp9.com:443</footer>
+  <oe-footer></oe-footer>
 
   <script src="/common/config.js"></script>
   <script src="/common/auth.js"></script>
   <script src="/common/ui.js"></script>
+  <script src="/common/navbar.js"></script>
+  <script src="/common/footer.js"></script>
   <script src="/index.js"></script>
 </body>
 </html>

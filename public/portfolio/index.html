@@ -1,73 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portfolio - OurEconomy</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shareholder Portfolio - OurEconomy</title><link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <nav class="navbar">
-    <a href="/" class="nav-brand">
-      <div class="brand-icon">OE</div>
-      <span class="brand-title">OurEconomy</span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="/">Dashboard</a></li>
-      <li><a href="/companies/">Companies</a></li>
-      <li><a href="/found/">Found</a></li>
-      <li><a href="/market/">Market</a></li>
-      <li><a href="/stores/">WebStores</a></li>
-      <li><a href="/portfolio/" class="active">Portfolio</a></li>
-      <li><a href="/users/">Citizens</a></li>
-    </ul>
-    <div class="nav-auth" id="navAuth">
-      <a href="/login/" class="btn btn-secondary btn-sm">Login</a>
-      <a href="/signup/" class="btn btn-primary btn-sm">Sign Up</a>
-    </div>
-  </nav>
+  <oe-navbar current-page="portfolio"></oe-navbar>
 
   <main class="container">
     <div class="page-header">
-      <div>
-        <h1>Personal Portfolio</h1>
-        <p>Your equity holdings and cap table stakes across the economy.</p>
-      </div>
+      <div><h1>Citizen Equity Portfolio</h1><p>Active corporate equity and dividend distribution rights.</p></div>
     </div>
-
     <div id="alertBox" class="alert"></div>
-
     <div class="card">
-      <div class="card-header">
-        <span class="card-title">Corporate Shareholdings</span>
-      </div>
+      <div class="card-header"><span class="card-title">Corporate Shareholdings</span></div>
       <div class="table-responsive">
         <table>
-          <thead>
-            <tr>
-              <th>Company ID</th>
-              <th>Company Name</th>
-              <th>Shares Owned</th>
-              <th>Shares Outstanding</th>
-              <th>Ownership %</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="portfolioTableBody">
-            <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Loading portfolio...</td></tr>
-          </tbody>
+          <thead><tr><th>Company ID</th><th>Company Name</th><th>Shares Owned</th><th>Total Outstanding</th><th>Ownership %</th><th>Action</th></tr></thead>
+          <tbody id="portfolioTableBody"><tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Loading portfolio...</td></tr></tbody>
         </table>
       </div>
     </div>
   </main>
 
-  <footer>
-    OurEconomy &bull; Static Frontend connected to oureconomy.server.napp9.com:443
-  </footer>
+  <oe-footer></oe-footer>
 
   <script src="/common/config.js"></script>
   <script src="/common/auth.js"></script>
   <script src="/common/ui.js"></script>
+  <script src="/common/navbar.js"></script>
+  <script src="/common/footer.js"></script>
   <script src="/portfolio/portfolio.js"></script>
 </body>
 </html>

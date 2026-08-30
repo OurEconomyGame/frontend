@@ -1,49 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Found a Company - OurEconomy</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Found a Company - OurEconomy</title><link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <nav class="navbar">
-    <a href="/" class="nav-brand">
-      <div class="brand-icon">OE</div>
-      <span class="brand-title">OurEconomy</span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="/">Dashboard</a></li>
-      <li><a href="/companies/">Companies</a></li>
-      <li><a href="/found/" class="active">Found</a></li>
-      <li><a href="/market/">Market</a></li>
-      <li><a href="/stores/">WebStores</a></li>
-      <li><a href="/portfolio/">Portfolio</a></li>
-      <li><a href="/users/">Citizens</a></li>
-    </ul>
-    <div class="nav-auth" id="navAuth">
-      <a href="/login/" class="btn btn-secondary btn-sm">Login</a>
-      <a href="/signup/" class="btn btn-primary btn-sm">Sign Up</a>
-    </div>
-  </nav>
+  <oe-navbar current-page="found"></oe-navbar>
 
   <main class="container">
     <div class="form-card" style="max-width: 520px;">
-      <div class="page-header" style="margin-bottom: 20px;">
-        <h2>Incorporate Enterprise</h2>
-      </div>
+      <div class="page-header" style="margin-bottom: 20px;"><h2>Incorporate Enterprise</h2></div>
       <div id="alertBox" class="alert"></div>
       <form id="foundForm">
+        <div class="form-group"><label for="companyName">Company Name</label><input type="text" id="companyName" class="form-control" required placeholder="e.g. Apex Minerals" /></div>
         <div class="form-group">
-          <label for="companyName">Company Name</label>
-          <input type="text" id="companyName" class="form-control" required placeholder="e.g. Apex Minerals" />
-        </div>
-        <div class="form-group">
-          <label for="companyType">Company Structure</label>
+          <label for="companyType">Structure</label>
           <select id="companyType" class="form-control" required>
-            <option value="0">🏭 Production Company ($500)</option>
-            <option value="1">🏛️ Holding Company ($2,000)</option>
-            <option value="2">🏪 WebStore ($750)</option>
+            <option value="0">🏭 Production Company ($500)</option><option value="1">🏛️ Holding Company ($2,000)</option><option value="2">🏪 WebStore ($750)</option>
           </select>
         </div>
         <button type="submit" class="btn btn-primary" style="width: 100%;">Establish Company</button>
@@ -51,13 +24,13 @@
     </div>
   </main>
 
-  <footer>
-    OurEconomy &bull; Static Frontend connected to oureconomy.server.napp9.com:443
-  </footer>
+  <oe-footer></oe-footer>
 
   <script src="/common/config.js"></script>
   <script src="/common/auth.js"></script>
   <script src="/common/ui.js"></script>
+  <script src="/common/navbar.js"></script>
+  <script src="/common/footer.js"></script>
   <script src="/found/found.js"></script>
 </body>
 </html>
