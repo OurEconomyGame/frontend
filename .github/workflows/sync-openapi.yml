@@ -1,0 +1,35 @@
+name: Sync OpenAPI Specification
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Daily at midnight UTC
+  workflow_dispatch:      # Manual trigger
+  repository_dispatch:    # Webhook trigger from server repo
+    types: [server-openapi-updated]
+
+permissions:
+  contents: write
+
+jobs:
+  sync-openapi:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Frontend Repository
+        uses: actions/checkout@v4
+
+      - name: Fetch OpenAPI specification from Server
+        run: |
+          curl -sSL https://raw.githubusercontent.com/OurEconomyGame/server/main/openapi.json -o openapi.json
+
+      - name: Commit and Push if Changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet openapi.json; then
+            git add openapi.json
+            git commit -m "Sync openapi.json from server - AI"
+            git push
+            echo "openapi.json was updated and pushed."
+          else
+            echo "openapi.json is already up to date."
+          fi
