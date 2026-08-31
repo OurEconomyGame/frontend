@@ -10,7 +10,7 @@
 
   <main class="container">
     <div class="page-header">
-      <div><h1>Company Registry</h1><p>Commercial enterprises, holdings, and production facilities.</p></div>
+      <div><h1>Company Registry</h1><p>Commercial enterprises, wage offerings, and production facilities.</p></div>
       <a href="/found/" class="btn btn-primary">+ Found Company</a>
     </div>
     <div id="alertBox" class="alert"></div>
@@ -21,15 +21,15 @@
           <select id="typeSelect" class="form-control" style="width: 130px; padding: 6px 8px;">
             <option value="">All Types</option><option value="0">Production</option><option value="1">Holding</option><option value="2">WebStore</option>
           </select>
-          <select id="sortSelect" class="form-control" style="width: 130px; padding: 6px 8px;">
-            <option value="id">Sort: ID</option><option value="name">Sort: Name</option><option value="cash">Sort: Cash</option>
+          <select id="sortSelect" class="form-control" style="width: 150px; padding: 6px 8px;">
+            <option value="id">Sort: ID</option><option value="wage_desc">Sort: Highest Wage</option><option value="wage_asc">Sort: Lowest Wage</option><option value="cash">Sort: Cash</option><option value="name">Sort: Name</option>
           </select>
         </div>
       </div>
       <div class="table-responsive">
         <table>
-          <thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Treasury Cash</th><th>Shares</th><th>CEO</th><th>Actions</th></tr></thead>
-          <tbody id="companiesTableBody"><tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Loading companies...</td></tr></tbody>
+          <thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Treasury</th><th>Wage / Shift</th><th>Shares</th><th>CEO</th><th>Actions</th></tr></thead>
+          <tbody id="companiesTableBody"><tr><td colspan="8" style="text-align: center; color: var(--text-muted);">Loading companies...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -37,12 +37,8 @@
 
   <oe-footer></oe-footer>
 
-  <script src="/common/consts.js"></script>
-  <script src="/common/auth.js"></script>
-  <script src="/common/ui.js"></script>
-  <script src="/common/navbar.js"></script>
-  <script src="/common/footer.js"></script>
-  <script src="/companies/shift.js"></script>
-  <script src="/companies/companies.js"></script>
+  <script src="/common/consts.js"></script><script src="/common/auth.js"></script><script src="/common/ui.js"></script>
+  <script src="/common/navbar.js"></script><script src="/common/footer.js"></script>
+  <script src="/companies/shift.js"></script><script src="/companies/companies.js"></script>
 </body>
 </html>

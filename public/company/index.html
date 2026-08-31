@@ -12,7 +12,7 @@
     <div class="page-header">
       <div><h1 id="companyNameHeader">Company Profile</h1><p id="companyTypeSubtitle">Overview, operations, and inventory</p></div>
       <div style="display: flex; gap: 8px;">
-        <button id="btnWorkShift" class="btn btn-primary">Work Daily Shift</button>
+        <button id="btnWorkShift" class="btn btn-primary">Work Shift</button>
         <a href="/companies/" class="btn btn-secondary">&larr; Back</a>
       </div>
     </div>
@@ -26,16 +26,21 @@
     </div>
 
     <div id="pane-overview" class="tab-pane active">
-      <div class="grid-3" style="margin-bottom: 24px;">
-        <div class="card"><div class="card-header"><span class="card-title">💵 Treasury</span></div><div id="compCash" class="stat-num">-</div><p style="font-size: 0.8rem; color: var(--text-muted);">Company cash balance</p></div>
-        <div class="card"><div class="card-header"><span class="card-title">📜 Shares</span></div><div id="compShares" class="stat-num">-</div><p style="font-size: 0.8rem; color: var(--text-muted);">Total distributed shares</p></div>
-        <div class="card"><div class="card-header"><span class="card-title">👑 Leadership</span></div><div style="margin-top: 10px; font-size: 0.95rem;"><p><strong>CEO:</strong> <span id="compCeo">-</span></p><p style="margin-top: 4px;"><strong>Founder:</strong> <span id="compFounder">-</span></p></div></div>
+      <div class="grid-2" style="margin-bottom: 24px;">
+        <div class="grid-2" style="gap: 16px;">
+          <div class="card"><div class="card-header"><span class="card-title">💵 Treasury</span></div><div id="compCash" class="stat-num">-</div><p style="font-size: 0.8rem; color: var(--text-muted);">Company cash balance</p></div>
+          <div class="card"><div class="card-header"><span class="card-title">💼 Shift Wage</span></div><div id="compWage" class="stat-num" style="color: var(--success);">-</div><p style="font-size: 0.8rem; color: var(--text-muted);">Payout per work shift</p></div>
+        </div>
+        <div class="grid-2" style="gap: 16px;">
+          <div class="card"><div class="card-header"><span class="card-title">📜 Shares</span></div><div id="compShares" class="stat-num">-</div><p style="font-size: 0.8rem; color: var(--text-muted);">Distributed equity</p></div>
+          <div class="card"><div class="card-header"><span class="card-title">👑 Leadership</span></div><div style="margin-top: 10px; font-size: 0.95rem;"><p><strong>CEO:</strong> <span id="compCeo">-</span></p><p style="margin-top: 4px;"><strong>Founder:</strong> <span id="compFounder">-</span></p></div></div>
+        </div>
       </div>
       <div class="card">
         <div class="card-header"><span class="card-title">Shareholder Cap Table</span></div>
         <div class="table-responsive">
           <table>
-            <thead><tr><th>Share ID</th><th>Owner ID</th><th>Entity Type</th><th>Shares Owned</th><th>Ownership %</th></tr></thead>
+            <thead><tr><th>Share ID</th><th>Owner</th><th>Entity Type</th><th>Shares Owned</th><th>Ownership %</th></tr></thead>
             <tbody id="shareholdersTableBody"><tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Loading shareholders...</td></tr></tbody>
           </table>
         </div>

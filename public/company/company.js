@@ -26,6 +26,13 @@ async function loadCompanyDetails() {
     const typeNames = { 0: 'Production Company', 1: 'Holding Company', 2: 'WebStore' };
     document.getElementById('companyTypeSubtitle').textContent = `${typeNames[c.type] || 'Enterprise'} (ID #${c.id})`;
     document.getElementById('compCash').textContent = formatCash(c.cash);
+    
+    const wageVal = Number(c.wage ?? (c.data && c.data.wage) ?? 10);
+    const wageEl = document.getElementById('compWage');
+    if (wageEl) wageEl.textContent = `$${wageVal.toLocaleString()}`;
+    const btnWork = document.getElementById('btnWorkShift');
+    if (btnWork) btnWork.textContent = `Work Shift ($${wageVal})`;
+
     document.getElementById('compShares').textContent = Number(c.shares_outstanding || 0).toLocaleString();
 
     const ceoId = (c.ceo !== undefined && c.ceo !== null) ? Number(c.ceo) : null;
