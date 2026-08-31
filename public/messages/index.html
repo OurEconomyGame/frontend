@@ -17,10 +17,21 @@
 
     <div class="grid-2" style="gap: 20px; align-items: flex-start;">
       <div class="card">
-        <div class="card-header"><span class="card-title">📬 Inbox</span></div>
+        <div class="card-header" style="justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+          <span class="card-title">📬 Mailbox</span>
+          <button id="btnRefreshInbox" class="btn btn-secondary btn-sm">🔄 Refresh</button>
+        </div>
+        <div id="adminMailboxBar" style="display: none; margin-bottom: 12px; padding: 10px; background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: var(--radius-md);">
+          <label style="font-size: 0.8rem; font-weight: 600; color: var(--accent);">👑 Admin Mailbox Inspector (Citizen ID):</label>
+          <div style="display: flex; gap: 8px; margin-top: 6px;">
+            <input type="number" id="adminTargetUserId" class="form-control" placeholder="Target User ID" style="flex: 1; height: 32px;" />
+            <button id="btnAdminInspect" class="btn btn-primary btn-sm">Inspect</button>
+            <button id="btnAdminReset" class="btn btn-secondary btn-sm">My Mail</button>
+          </div>
+        </div>
         <div class="table-responsive">
           <table>
-            <thead><tr><th>From</th><th>Subject</th><th>Action</th></tr></thead>
+            <thead><tr><th>From</th><th>Subject</th><th>Actions</th></tr></thead>
             <tbody id="inboxTableBody"><tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Loading messages...</td></tr></tbody>
           </table>
         </div>
@@ -41,7 +52,10 @@
           <div class="card-header" style="justify-content: space-between;"><span class="card-title" id="readSubject">Message</span><button class="btn btn-secondary btn-sm" onclick="closeReader()">✕ Close</button></div>
           <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;"><strong>From:</strong> <span id="readSender">-</span></p>
           <div id="readContent" style="padding: 12px; background: var(--bg-secondary); border-radius: var(--radius-md); font-size: 0.95rem; white-space: pre-wrap; line-height: 1.5; margin-bottom: 16px;"></div>
-          <button id="btnReply" class="btn btn-primary btn-sm">↩ Reply</button>
+          <div style="display: flex; gap: 8px;">
+            <button id="btnReply" class="btn btn-primary btn-sm">↩ Reply</button>
+            <button id="btnDeleteMsg" class="btn btn-danger btn-sm">🗑️ Delete</button>
+          </div>
         </div>
       </div>
     </div>
