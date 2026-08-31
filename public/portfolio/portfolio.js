@@ -11,7 +11,7 @@ async function loadPortfolio() {
   const token = getAuthToken(), tbody = document.getElementById('portfolioTableBody'), invTbody = document.getElementById('userInventoryTableBody'), dangerCard = document.getElementById('accountDangerCard');
   if (!token) {
     if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);"><a href="/login/" style="color: var(--primary);">Login</a> to view portfolio.</td></tr>';
-    if (invTbody) invTbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);"><a href="/login/" style="color: var(--primary);">Login</a> to view inventory.</td></tr>';
+    if (invTbody) invTbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted);"><a href="/login/" style="color: var(--primary);">Login</a> to view inventory.</td></tr>';
     return;
   }
   if (dangerCard) { dangerCard.style.display = 'block'; document.getElementById('btnDeleteUser').addEventListener('click', deleteAccount); }
@@ -23,7 +23,7 @@ async function loadPortfolio() {
 
     if (invTbody) {
       const userInv = (data.user && data.user.inventory) || data.inventory || {}, resList = typeof RESOURCES !== 'undefined' ? RESOURCES : [];
-      invTbody.innerHTML = resList.map(r => `<tr><td><code>#${r.id}</code></td><td><strong>${escapeHtml(r.name)}</strong></td><td><strong style="color: ${Number(userInv[r.id] ?? 0) > 0 ? 'var(--success)' : 'var(--text-muted)'};">${Number(userInv[r.id] ?? 0).toLocaleString()}</strong></td><td><a href="/market/?resource=${r.id}" class="btn btn-secondary btn-sm">Trade on Market &rarr;</a></td></tr>`).join('');
+      invTbody.innerHTML = resList.map(r => `<tr><td><code>#${r.id}</code></td><td><strong>${escapeHtml(r.name)}</strong></td><td><strong style="color: ${Number(userInv[r.id] ?? 0) > 0 ? 'var(--success)' : 'var(--text-muted)'};">${Number(userInv[r.id] ?? 0).toLocaleString()}</strong></td></tr>`).join('');
     }
   } catch (err) { if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--danger);">${err.message}</td></tr>`; }
 }
@@ -55,7 +55,7 @@ function setupMintControls() {
   card.style.display = 'block';
   card.innerHTML = `<div class="card-header"><span class="card-title" style="color: var(--accent);">⚡ Cash Minting &amp; Injection</span></div><form id="formCashMint" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;"><div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 140px;"><label>Target</label><select id="injectTargetType" class="form-control"><option value="user">Citizen ID</option><option value="company">Company ID</option></select></div><div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 110px;"><label>Target ID</label><input type="number" id="injectTargetId" class="form-control" value="0" min="0" required /></div><div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 130px;"><label>Amount ($)</label><input type="number" id="injectAmount" class="form-control" placeholder="10000" min="1" required /></div><button type="submit" class="btn btn-primary" style="height: 38px;">Mint &amp; Inject</button></form>`;
 
-  document.getElementById('formCashMint').addEventListener('submit', async (e) => {
+  document.getElementById('formAdminInject').addEventListener('submit', async (e) => {
     e.preventDefault();
     const type = document.getElementById('injectTargetType').value, targetId = Number(document.getElementById('injectTargetId').value), amount = Number(document.getElementById('injectAmount').value);
     try {
