@@ -11,7 +11,7 @@ async function loadPortfolio() {
   const token = getAuthToken(), tbody = document.getElementById('portfolioTableBody'), invTbody = document.getElementById('userInventoryTableBody'), dangerCard = document.getElementById('accountDangerCard');
   if (!token) {
     if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);"><a href="/login/" style="color: var(--primary);">Login</a> to view portfolio.</td></tr>';
-    if (invTbody) invTbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted);"><a href="/login/" style="color: var(--primary);">Login</a> to view inventory.</td></tr>';
+    if (invTbody) invTbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);"><a href="/login/" style="color: var(--primary);">Login</a> to view inventory.</td></tr>';
     return;
   }
   if (dangerCard) { dangerCard.style.display = 'block'; document.getElementById('btnDeleteUser').addEventListener('click', deleteAccount); }
@@ -23,10 +23,28 @@ async function loadPortfolio() {
 
     if (invTbody) {
       const userInv = (data.user && data.user.inventory) || data.inventory || {}, resList = typeof RESOURCES !== 'undefined' ? RESOURCES : [];
-      invTbody.innerHTML = resList.map(r => `<tr><td><code>#${r.id}</code></td><td><strong>${escapeHtml(r.name)}</strong></td><td><strong style="color: ${Number(userInv[r.id] ?? 0) > 0 ? 'var(--success)' : 'var(--text-muted)'};">${Number(userInv[r.id] ?? 0).toLocaleString()}</strong></td></tr>`).join('');
+      invTbody.innerHTML = resList.map(r => {
+        const qty = Number(userInv[r.id] ?? 0);
+        const action = (r.id === 0 && qty > 0) ? `<button class="btn btn-primary btn-sm" onclick="consumeFood()">Eat Food (Reset Shifts)</button>` : '<span style="color: var(--text-muted); font-size: 0.8rem;">—</span>';
+        return `<tr><td><code>#${r.id}</code></td><td><strong>${escapeHtml(r.name)}</strong></td><td><strong style="color: ${qty > 0 ? 'var(--success)' : 'var(--text-muted)'};">${qty.toLocaleString()}</strong></td><td>${action}</td></tr>`;
+      }).join('');
     }
   } catch (err) { if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--danger);">${err.message}</td></tr>`; }
 }
+
+window.consumeFood = async function() {
+  const token = getAuthToken();
+  if (!token) return showAlert('Please login to consume food.', 'danger');
+  if (!confirm('Consume 1 Food ration to reset your 20 daily work shifts?')) return;
+  try {
+    const res = await fetch(`${BACKEND}/use/food`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Auth': token } });
+    const data = await res.json();
+    if (data.status === 'Success' || data.food_consumed !== undefined) {
+      showAlert(`Ate 1 Food! Daily work shifts reset (Remaining: ${data.works_left ?? 20})!`, 'success');
+      loadPortfolio(); if (typeof renderAuthNav === 'function') renderAuthNav();
+    } else showAlert(data.message || data.status || 'Food consumption failed', 'danger');
+  } catch (err) { showAlert(err.message, 'danger'); }
+};
 
 async function loadPublicPortfolio(userId) {
   const userMap = await getUserMap(), userName = userMap[userId] || `Citizen #${userId}`, tbody = document.getElementById('portfolioTableBody'), invCard = document.getElementById('userInventoryTableBody')?.closest('.card');
