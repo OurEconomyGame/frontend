@@ -18,10 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadCompanyDetails() {
   const token = getAuthToken();
   try {
-    const [res, userMap] = await Promise.all([
-      fetch(`${BACKEND}/company?id=${companyId}`, { headers: token ? { 'Auth': token } : {} }),
-      getUserMap()
-    ]);
+    const [res, userMap] = await Promise.all([fetch(`${BACKEND}/company?id=${companyId}`, { headers: token ? { 'Auth': token } : {} }), getUserMap()]);
     const data = await res.json(), c = data.company || data;
     if (!c.name) return;
 
@@ -31,14 +28,11 @@ async function loadCompanyDetails() {
     document.getElementById('compCash').textContent = formatCash(c.cash);
     document.getElementById('compShares').textContent = Number(c.shares_outstanding || 0).toLocaleString();
 
-    const ceoId = (c.ceo !== undefined && c.ceo !== null) ? Number(c.ceo) : null;
-    const founderId = ((c.founder_id ?? c.founder) !== undefined && (c.founder_id ?? c.founder) !== null) ? Number(c.founder_id ?? c.founder) : null;
-    
+    const ceoId = (c.ceo !== undefined && c.ceo !== null) ? Number(c.ceo) : null, founderId = ((c.founder_id ?? c.founder) !== undefined && (c.founder_id ?? c.founder) !== null) ? Number(c.founder_id ?? c.founder) : null;
     document.getElementById('compCeo').innerHTML = ceoId !== null ? `<a href="/portfolio/?user=${ceoId}" style="color: var(--primary); font-weight: 600;">${escapeHtml(userMap[ceoId] || `Citizen #${ceoId}`)}</a>` : '<span style="color: var(--text-muted);">None</span>';
     document.getElementById('compFounder').innerHTML = founderId !== null ? `<a href="/portfolio/?user=${founderId}" style="color: var(--primary); font-weight: 600;">${escapeHtml(userMap[founderId] || `Citizen #${founderId}`)}</a>` : '<span style="color: var(--text-muted);">None</span>';
 
     renderFacilities(c); renderInventory(c);
-
     const isCeo = (c.data !== undefined && c.data !== null) || (localStorage.getItem('oe_user_id') !== null && Number(localStorage.getItem('oe_user_id')) === ceoId);
     if (isCeo) {
       document.getElementById('tabBtnCeo').style.display = 'block';
@@ -54,8 +48,12 @@ function renderFacilities(c) {
   if (!facs.length) return tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No facilities owned yet.</td></tr>';
   const rNames = { 0: 'Food', 1: 'Water', 2: 'Grain', 3: 'Electricity', 4: 'Cement', 5: 'Metal', 6: 'RawOre' };
   tbody.innerHTML = facs.map(f => {
-    const rec = f.recipe || {}, inStr = Object.entries(rec.inputs || {}).map(([r, a]) => `${a} ${rNames[r] || `R#${r}`}`).join(', ') || 'None', outStr = `${rec.amount || 0} ${rNames[rec.output] || `R#${rec.output ?? '-'}`}`;
-    return `<tr><td><strong>${escapeHtml(f.name || 'Facility')}</strong><br><small style="color: var(--text-muted);">${f.id || ''}</small></td><td>${escapeHtml(rec.name || 'Standard')}</td><td><span style="color: var(--text-muted);">${inStr}</span> &rarr; <strong style="color: var(--success);">${outStr}</strong></td><td><span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">${f.active ? 'Active' : 'Inactive'} (${f.efficiency || 1}x)</span></td></tr>`;
+    const rec = f.recipe || {}, inList = Object.entries(rec.inputs || {}).filter(([, a]) => Number(a) > 0);
+    const inStr = inList.map(([r, a]) => `${a} ${rNames[r] || `R#${r}`}`).join(', ') || 'None';
+    const outType = rec.outputType ?? rec.output, outQuant = rec.outputQuant ?? rec.amount ?? 0;
+    const outStr = `${outQuant} ${(outType !== undefined && outType !== null) ? (rNames[outType] || `R#${outType}`) : 'None'}`;
+    const levelStr = f.level ? `Lv ${f.level}` : (f.efficiency ? `${f.efficiency}x` : 'Active');
+    return `<tr><td><strong>${escapeHtml(f.name || 'Facility')}</strong><br><small style="color: var(--text-muted);">${f.id || ''}</small></td><td>${escapeHtml(rec.name || 'Standard')}</td><td><span style="color: var(--text-muted);">${inStr}</span> &rarr; <strong style="color: var(--success);">${outStr}</strong></td><td><span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">${f.active ? 'Active' : 'Inactive'} (${levelStr})</span></td></tr>`;
   }).join('');
 }
 
