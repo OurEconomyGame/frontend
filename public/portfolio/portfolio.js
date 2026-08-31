@@ -1,5 +1,4 @@
-const urlParams = new URLSearchParams(window.location.search);
-const targetUserId = urlParams.get('user') || urlParams.get('id');
+const urlParams = new URLSearchParams(window.location.search), targetUserId = urlParams.get('user') || urlParams.get('id');
 
 document.addEventListener('DOMContentLoaded', () => {
   renderAuthNav();
@@ -17,8 +16,7 @@ async function loadPortfolio() {
   if (dangerCard) { dangerCard.style.display = 'block'; document.getElementById('btnDeleteUser').addEventListener('click', deleteAccount); }
 
   try {
-    const res = await fetch(`${BACKEND}/portfolio`, { headers: { 'Auth': token } });
-    const data = await res.json(), list = data.portfolio || [];
+    const res = await fetch(`${BACKEND}/portfolio`, { headers: { 'Auth': token } }), data = await res.json(), list = data.portfolio || [];
     if (tbody) tbody.innerHTML = !list.length ? '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No owned shares.</td></tr>' : list.map(item => `<tr><td><strong>#${item.company_id}</strong></td><td>${escapeHtml(item.company_name)}</td><td>${Number(item.quantity).toLocaleString()}</td><td>${Number(item.shares_outstanding).toLocaleString()}</td><td><strong style="color: var(--primary);">${item.ownership_percentage}%</strong></td><td><a href="/company/?id=${item.company_id}" class="btn btn-secondary btn-sm">Company Page</a></td></tr>`).join('');
 
     if (invTbody) {
@@ -37,8 +35,7 @@ window.consumeFood = async function() {
   if (!token) return showAlert('Please login to consume food.', 'danger');
   if (!confirm('Consume 1 Food ration to reset your 20 daily work shifts?')) return;
   try {
-    const res = await fetch(`${BACKEND}/use/food`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Auth': token } });
-    const data = await res.json();
+    const res = await fetch(`${BACKEND}/use/food`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Auth': token } }), data = await res.json();
     if (data.status === 'Success' || data.food_consumed !== undefined) {
       showAlert(`Ate 1 Food! Daily work shifts reset (Remaining: ${data.works_left ?? 20})!`, 'success');
       loadPortfolio(); if (typeof renderAuthNav === 'function') renderAuthNav();
@@ -49,12 +46,11 @@ window.consumeFood = async function() {
 async function loadPublicPortfolio(userId) {
   const userMap = await getUserMap(), userName = userMap[userId] || `Citizen #${userId}`, tbody = document.getElementById('portfolioTableBody'), invCard = document.getElementById('userInventoryTableBody')?.closest('.card');
   document.querySelector('.page-header h1').textContent = `${userName}'s Portfolio`;
-  document.querySelector('.page-header p').textContent = `Public equity holdings for ${userName}.`;
+  document.querySelector('.page-header p').innerHTML = `Public equity holdings for ${userName}. <a href="/messages/?to=${userId}" class="btn btn-primary btn-sm" style="margin-left: 8px;">✉️ Send Message</a>`;
   if (invCard) invCard.style.display = 'none';
 
   try {
-    const res = await fetch(`${BACKEND}/user?id=${userId}`), data = await res.json();
-    const holdings = (data.user && Array.isArray(data.user.shareholdings)) ? data.user.shareholdings : [];
+    const res = await fetch(`${BACKEND}/user?id=${userId}`), data = await res.json(), holdings = (data.user && Array.isArray(data.user.shareholdings)) ? data.user.shareholdings : [];
     if (!holdings.length) return tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">${userName} does not own shares.</td></tr>`;
     tbody.innerHTML = holdings.map(item => `<tr><td><strong>#${item.company_id}</strong></td><td>${escapeHtml(item.company_name)}</td><td>${Number(item.quantity).toLocaleString()}</td><td>${Number(item.shares_outstanding).toLocaleString()}</td><td><strong style="color: var(--primary);">${item.ownership_percentage}%</strong></td><td><a href="/company/?id=${item.company_id}" class="btn btn-secondary btn-sm">Company Page</a></td></tr>`).join('');
   } catch (err) { tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--danger);">${err.message}</td></tr>`; }

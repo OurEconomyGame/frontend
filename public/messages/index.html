@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages - OurEconomy</title><link rel="stylesheet" href="/css/style.css">
+  <script src="/common/theme.js"></script>
+</head>
+<body>
+  <oe-navbar current-page="messages"></oe-navbar>
+
+  <main class="container">
+    <div class="page-header">
+      <div><h1>Citizen Communications</h1><p>Direct citizen-to-citizen mailbox and communications.</p></div>
+      <button id="btnOpenCompose" class="btn btn-primary">+ Compose Message</button>
+    </div>
+    <div id="alertBox" class="alert"></div>
+
+    <div class="grid-2" style="gap: 20px; align-items: flex-start;">
+      <div class="card">
+        <div class="card-header"><span class="card-title">📬 Inbox</span></div>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>From</th><th>Subject</th><th>Action</th></tr></thead>
+            <tbody id="inboxTableBody"><tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Loading messages...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <div id="composeCard" class="card" style="margin-bottom: 20px;">
+          <div class="card-header"><span class="card-title" id="composeTitle">✉️ Compose Message</span></div>
+          <form id="formSendMessage">
+            <div class="form-group"><label>Recipient Citizen ID</label><input type="number" id="msgReceiverId" class="form-control" placeholder="0" min="0" required /></div>
+            <div class="form-group"><label>Subject (Optional)</label><input type="text" id="msgSubject" class="form-control" placeholder="Trade Inquiry" /></div>
+            <div class="form-group"><label>Message Content</label><textarea id="msgContent" class="form-control" rows="4" placeholder="Type your message here..." required></textarea></div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
+          </form>
+        </div>
+
+        <div id="readerCard" class="card" style="display: none; border-color: var(--primary);">
+          <div class="card-header" style="justify-content: space-between;"><span class="card-title" id="readSubject">Message</span><button class="btn btn-secondary btn-sm" onclick="closeReader()">✕ Close</button></div>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;"><strong>From:</strong> <span id="readSender">-</span></p>
+          <div id="readContent" style="padding: 12px; background: var(--bg-secondary); border-radius: var(--radius-md); font-size: 0.95rem; white-space: pre-wrap; line-height: 1.5; margin-bottom: 16px;"></div>
+          <button id="btnReply" class="btn btn-primary btn-sm">↩ Reply</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <oe-footer></oe-footer>
+
+  <script src="/common/consts.js"></script><script src="/common/auth.js"></script><script src="/common/ui.js"></script>
+  <script src="/common/navbar.js"></script><script src="/common/footer.js"></script>
+  <script src="/messages/messages.js"></script>
+</body>
+</html>

@@ -16,11 +16,12 @@ class OENavbar extends HTMLElement {
           <li><a href="/market/" class="${page === 'market' ? 'active' : ''}">Market</a></li>
           <li><a href="/stores/" class="${page === 'stores' ? 'active' : ''}">WebStores</a></li>
           <li><a href="/portfolio/" class="${page === 'portfolio' ? 'active' : ''}">Portfolio</a></li>
+          <li><a href="/messages/" class="${page === 'messages' ? 'active' : ''}">Messages</a></li>
           <li><a href="/users/" class="${page === 'users' ? 'active' : ''}">Citizens</a></li>
           <li><a href="/info/" class="${page === 'info' ? 'active' : ''}">Info</a></li>
         </ul>
         <div class="nav-right">
-          <button id="btnThemeToggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle color theme">🌓</button>
+          <button id="btnThemeToggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">🌓</button>
           <div class="nav-auth" id="navAuth">
             <a href="/login/" class="btn btn-secondary btn-sm">Login</a>
             <a href="/signup/" class="btn btn-primary btn-sm">Sign Up</a>
