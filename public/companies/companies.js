@@ -7,15 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadCompanies() {
   const tbody = document.getElementById('companiesTableBody'), sortBy = document.getElementById('sortSelect').value, type = document.getElementById('typeSelect').value, token = getAuthToken();
-  tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-muted);">Loading companies...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; color: var(--text-muted);">Loading companies...</td></tr>';
 
   let url = `${BACKEND}/list/companies`;
   if (type !== '') url += `?type=${type}`;
 
   try {
-    const res = await fetch(url, { headers: token ? { 'Auth': token } : {} });
+    const [res, compMap] = await Promise.all([fetch(url, { headers: token ? { 'Auth': token } : {} }), getCompanyMap()]);
     const companies = await res.json();
-    if (!Array.isArray(companies) || !companies.length) return tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-muted);">No companies found</td></tr>';
+    if (!Array.isArray(companies) || !companies.length) return tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; color: var(--text-muted);">No companies found</td></tr>';
 
     if (sortBy === 'wage_desc') companies.sort((a, b) => (b.wage ?? 10) - (a.wage ?? 10));
     else if (sortBy === 'wage_asc') companies.sort((a, b) => (a.wage ?? 10) - (b.wage ?? 10));
@@ -25,9 +25,16 @@ async function loadCompanies() {
 
     const typeLabels = { 0: 'Production', 1: 'Holding', 2: 'WebStore' }, badgeClasses = { 0: 'badge-production', 1: 'badge-holding', 2: 'badge-store' };
     const rows = await Promise.all(companies.map(async (c) => {
-      const ceoLabel = await renderUserLink(c.ceo), wageVal = Number(c.wage ?? 10);
-      return `<tr><td><strong>#${c.id}</strong></td><td>${escapeHtml(c.name)}</td><td><span class="badge ${badgeClasses[c.type] || ''}">${typeLabels[c.type] || 'Unknown'}</span></td><td>${formatCash(c.cash)}</td><td><strong style="color: var(--success);">$${wageVal.toLocaleString()}</strong></td><td>${c.shares_outstanding || 0}</td><td>${ceoLabel}</td><td><a href="/company/?id=${c.id}" class="btn btn-secondary btn-sm">Details</a> <button class="btn btn-primary btn-sm" onclick="workShift(${c.id})">Work ($${wageVal})</button></td></tr>`;
+      const ceoLabel = await renderUserLink(c.ceo), founderLabel = await renderUserLink(c.founder_id ?? c.founder);
+      let ownerLabel = '<span style="color: var(--text-muted);">None</span>';
+      if (Array.isArray(c.shareholders) && c.shareholders.length > 0) {
+        const top = c.shareholders[0];
+        const topName = top.owner_user ? await renderUserLink(top.owner_id) : `<a href="/company/?id=${top.owner_id}" style="color: var(--accent); font-weight: 600;">${escapeHtml(compMap[top.owner_id] || `Company #${top.owner_id}`)}</a>`;
+        ownerLabel = `${topName} <small style="color: var(--text-muted);">(${top.percentage}%)</small>`;
+      }
+      const wageVal = Number(c.wage ?? 10);
+      return `<tr><td><strong>#${c.id}</strong></td><td>${escapeHtml(c.name)}</td><td><span class="badge ${badgeClasses[c.type] || ''}">${typeLabels[c.type] || 'Unknown'}</span></td><td>${formatCash(c.cash)}</td><td><strong style="color: var(--success);">$${wageVal.toLocaleString()}</strong></td><td>${c.shares_outstanding || 0}</td><td>${ceoLabel}</td><td>${founderLabel}</td><td>${ownerLabel}</td><td><a href="/company/?id=${c.id}" class="btn btn-secondary btn-sm">Details</a> <button class="btn btn-primary btn-sm" onclick="workShift(${c.id})">Work ($${wageVal})</button></td></tr>`;
     }));
     tbody.innerHTML = rows.join('');
-  } catch (err) { tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--danger);">${err.message}</td></tr>`; }
+  } catch (err) { tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--danger);">${err.message}</td></tr>`; }
 }
