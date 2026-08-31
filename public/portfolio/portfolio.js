@@ -35,17 +35,13 @@ async function loadPublicPortfolio(userId) {
   if (invCard) invCard.style.display = 'none';
 
   try {
-    const compRes = await fetch(`${BACKEND}/list/companies`), comps = await compRes.json();
-    if (!Array.isArray(comps) || !comps.length) return tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No shares found.</td></tr>';
-    const holdings = [];
-    await Promise.all(comps.map(async (c) => {
-      try {
-        const shRes = await fetch(`${BACKEND}/company/shareholders?id=${c.id}`), shData = await shRes.json();
-        const userShare = (shData.shareholders || []).find(s => s.owner_user && s.owner_id === userId);
-        if (userShare) holdings.push({ company_id: c.id, company_name: c.name, quantity: userShare.quantity, shares_outstanding: c.shares_outstanding || 0, ownership_percentage: userShare.percentage });
-      } catch (e) {}
-    }));
-    tbody.innerHTML = !holdings.length ? `<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">${userName} does not own shares.</td></tr>` : holdings.map(item => `<tr><td><strong>#${item.company_id}</strong></td><td>${escapeHtml(item.company_name)}</td><td>${Number(item.quantity).toLocaleString()}</td><td>${Number(item.shares_outstanding).toLocaleString()}</td><td><strong style="color: var(--primary);">${item.ownership_percentage}%</strong></td><td><a href="/company/?id=${item.company_id}" class="btn btn-secondary btn-sm">Company Page</a></td></tr>`).join('');
+    const res = await fetch(`${BACKEND}/user?id=${userId}`), data = await res.json();
+    const holdings = (data.user && Array.isArray(data.user.shareholdings)) ? data.user.shareholdings : [];
+    if (!holdings.length) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">${userName} does not own shares.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = holdings.map(item => `<tr><td><strong>#${item.company_id}</strong></td><td>${escapeHtml(item.company_name)}</td><td>${Number(item.quantity).toLocaleString()}</td><td>${Number(item.shares_outstanding).toLocaleString()}</td><td><strong style="color: var(--primary);">${item.ownership_percentage}%</strong></td><td><a href="/company/?id=${item.company_id}" class="btn btn-secondary btn-sm">Company Page</a></td></tr>`).join('');
   } catch (err) { tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--danger);">${err.message}</td></tr>`; }
 }
 

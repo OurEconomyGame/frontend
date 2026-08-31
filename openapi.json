@@ -8,7 +8,7 @@
 			"name": "BSL 1.1 / API Terms of Service",
 			"url": "https://raw.githubusercontent.com/OurEconomyGame/server/main/LICENSE.md"
 		},
-		"version": "0.28.0"
+		"version": "0.31.0"
 	},
 	"paths": {
 		"/version": {
@@ -83,6 +83,122 @@
 											"active": {
 												"type": "number"
 											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/user": {
+			"get": {
+				"summary": "Get a user's public info and shareholdings by id or name",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "query",
+						"required": false,
+						"description": "User ID to search for",
+						"schema": {
+							"type": "integer"
+						}
+					},
+					{
+						"name": "name",
+						"in": "query",
+						"required": false,
+						"description": "Username to search for",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Public user info and shareholdings",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string"
+										},
+										"user": {
+											"type": "object",
+											"nullable": true,
+											"properties": {
+												"id": {
+													"type": "number"
+												},
+												"username": {
+													"type": "string"
+												},
+												"joined": {
+													"type": "number"
+												},
+												"active": {
+													"type": "number"
+												},
+												"shareholdings": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"properties": {
+															"share_id": { "type": "number" },
+															"company_id": { "type": "number" },
+															"company_name": { "type": "string" },
+															"company_type": { "type": "number" },
+															"quantity": { "type": "number" },
+															"shares_outstanding": { "type": "number" },
+															"ownership_percentage": { "type": "number" }
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/user/work": {
+			"get": {
+				"summary": "Get authenticated user's work shift status and remaining shifts for the day",
+				"parameters": [
+					{
+						"name": "Auth",
+						"in": "header",
+						"required": true,
+						"description": "Session token of the user",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User work status and remaining daily shifts",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string" },
+										"user_id": { "type": "integer" },
+										"username": { "type": "string" },
+										"works_used": { "type": "integer" },
+										"works_left": { "oneOf": [{ "type": "integer" }, { "type": "string" }] },
+										"works_max": { "oneOf": [{ "type": "integer" }, { "type": "string" }] },
+										"date": { "type": "string" },
+										"companies_worked": {
+											"type": "array",
+											"items": { "type": "integer" }
 										}
 									}
 								}
@@ -233,6 +349,34 @@
 												"created_at": { "type": "number" },
 												"ceo": { "type": "number" },
 												"shares_outstanding": { "type": "number" },
+												"shareholders": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"properties": {
+															"share_id": { "type": "number" },
+															"owner_id": { "type": "number" },
+															"owner_user": { "type": "boolean" },
+															"quantity": { "type": "number" },
+															"percentage": { "type": "number" }
+														}
+													}
+												},
+												"shareholdings": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"properties": {
+															"share_id": { "type": "number" },
+															"company_id": { "type": "number" },
+															"company_name": { "type": "string" },
+															"company_type": { "type": "number" },
+															"quantity": { "type": "number" },
+															"shares_outstanding": { "type": "number" },
+															"ownership_percentage": { "type": "number" }
+														}
+													}
+												},
 												"data": {
 													"type": "object",
 													"description": "Included only if caller is the CEO"

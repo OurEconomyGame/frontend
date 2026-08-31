@@ -1,3 +1,29 @@
+let _ceoCompanyInventories = {};
+
+async function fetchCompanyInventory(compId) {
+  if (!compId) return {};
+  if (_ceoCompanyInventories[compId]) return _ceoCompanyInventories[compId];
+  const token = getAuthToken();
+  try {
+    const res = await fetch(`${BACKEND}/company?id=${compId}`, { headers: token ? { 'Auth': token } : {} });
+    const data = await res.json(), c = data.company || data;
+    const inv = (c.data && c.data.inventory) || c.inventory || {};
+    _ceoCompanyInventories[compId] = inv;
+    return inv;
+  } catch (e) { return {}; }
+}
+
+async function syncTradeQuantity() {
+  const compVal = document.getElementById('tradeCompId')?.value;
+  const resVal = Number(document.getElementById('tradeResource')?.value || 0);
+  const qtyInput = document.getElementById('tradeQuantity');
+  if (!qtyInput || !compVal) return;
+
+  const inv = await fetchCompanyInventory(compVal);
+  const maxStock = Number(inv[resVal] ?? inv[String(resVal)] ?? 0);
+  if (maxStock > 0) qtyInput.value = maxStock;
+}
+
 async function initTradeDropdowns() {
   const compSelect = document.getElementById('tradeCompId'), cancelSelect = document.getElementById('cancelCompId'), resSelect = document.getElementById('tradeResource'), depthSelect = document.getElementById('selectedResourceDropdown');
   if (resSelect && typeof RESOURCES !== 'undefined') resSelect.innerHTML = RESOURCES.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
@@ -10,11 +36,13 @@ async function initTradeDropdowns() {
   try {
     const res = await fetch(`${BACKEND}/company/ceo`, { headers: { 'Auth': token } });
     const data = await res.json(), comps = Array.isArray(data.companies) ? data.companies : [];
+    comps.forEach(c => { if (c.data && c.data.inventory) _ceoCompanyInventories[c.id] = c.data.inventory; });
     const compOptions = comps.map(c => `<option value="${c.id}">${escapeHtml(c.name)} (#${c.id})</option>`).join('');
 
     const sinkOption = isAdmin ? '<option value="">Personal Consumer Sink (My Wallet)</option>' : (comps.length ? '<option value="">Select Company...</option>' : '<option value="">No CEO Companies</option>');
     compSelect.innerHTML = `${sinkOption}${compOptions}`;
     if (cancelSelect) cancelSelect.innerHTML = `${isAdmin ? '<option value="">Personal Orders</option>' : (comps.length ? '<option value="">Select Company...</option>' : '')}${compOptions}`;
+    syncTradeQuantity();
   } catch (e) {}
 }
 
@@ -36,17 +64,15 @@ async function executeTrade(side) {
   if (compVal) body.company_id = Number(compVal);
 
   try {
-    const res = await fetch(`${BACKEND}/market/${side === 'buy' ? 'buy' : 'sell'}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Auth': token },
-      body: JSON.stringify(body)
-    });
+    const res = await fetch(`${BACKEND}/market/${side === 'buy' ? 'buy' : 'sell'}`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Auth': token }, body: JSON.stringify(body) });
     const data = await res.json();
     if (data.status === 'success' || data.filled_quantity !== undefined) {
+      delete _ceoCompanyInventories[compVal];
       const sinkNote = data.sink ? ' (Consumer Sink)' : '';
       showAlert(`${side.toUpperCase()}${sinkNote} executed! Filled: ${data.filled_quantity || 0}, Remaining: ${data.remaining_quantity || 0}`, 'success');
       if (typeof fetchAllCommodities === 'function') fetchAllCommodities();
       if (typeof renderAuthNav === 'function') renderAuthNav();
+      syncTradeQuantity();
     } else showAlert(data.message || data.status || 'Trade order failed', 'danger');
   } catch (err) { showAlert(err.message, 'danger'); }
 }
@@ -69,8 +95,10 @@ async function cancelTradeOrder(e) {
     const res = await fetch(`${BACKEND}/market/cancel`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Auth': token }, body: JSON.stringify(body) });
     const data = await res.json();
     if (data.status === 'success' || data.cancelled) {
+      delete _ceoCompanyInventories[compVal];
       showAlert(`Order cancelled! Refunded Cash: $${data.refunded_cash || 0}, Refunded Resources: ${data.refunded_resource_qty || 0}`, 'success');
       if (typeof fetchAllCommodities === 'function') fetchAllCommodities();
+      syncTradeQuantity();
     } else showAlert(data.message || data.status || 'Cancellation failed', 'danger');
   } catch (err) { showAlert(err.message, 'danger'); }
 }
