@@ -49,7 +49,7 @@ async function loadCompanyDetails() {
     renderInventory(c);
     if (isCeo) {
       document.getElementById('tabBtnCeo').style.display = 'block';
-      if (typeof renderCEODashboard === 'function') renderCEODashboard(document.getElementById('ceoManagementCard'), companyId, token);
+      if (typeof renderCEODashboard === 'function') renderCEODashboard(document.getElementById('ceoManagementCard'), companyId, token, c);
     }
   } catch (err) { showAlert(err.message || 'Failed to load profile', 'danger'); }
 }
