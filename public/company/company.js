@@ -27,10 +27,17 @@ async function loadCompanyDetails() {
     document.getElementById('companyTypeSubtitle').textContent = `${typeNames[c.type] || 'Enterprise'} (ID #${c.id})`;
     document.getElementById('compCash').textContent = formatCash(c.cash);
     
-    const wageVal = Number(c.wage ?? (c.data && c.data.wage) ?? 10);
-    const wageEl = document.getElementById('compWage'), btnWork = document.getElementById('btnWorkShift');
-    if (wageEl) wageEl.textContent = `$${wageVal.toLocaleString()}`;
-    if (btnWork) btnWork.textContent = `Work Shift ($${wageVal})`;
+    const isProd = Number(c.type) === 0, isStore = Number(c.type) === 2;
+    const cardWage = document.getElementById('cardWage'), btnWork = document.getElementById('btnWorkShift');
+    if (cardWage) cardWage.style.display = isProd ? 'block' : 'none';
+    if (btnWork) {
+      btnWork.style.display = isProd ? 'inline-block' : 'none';
+      if (isProd) {
+        const wageVal = Number(c.wage ?? (c.data && c.data.wage) ?? 10);
+        document.getElementById('compWage').textContent = `$${wageVal.toLocaleString()}`;
+        btnWork.textContent = `Work Shift ($${wageVal})`;
+      }
+    }
 
     document.getElementById('compShares').textContent = Number(c.shares_outstanding || 0).toLocaleString();
     const ceoId = (c.ceo !== undefined && c.ceo !== null) ? Number(c.ceo) : null, founderId = ((c.founder_id ?? c.founder) !== undefined && (c.founder_id ?? c.founder) !== null) ? Number(c.founder_id ?? c.founder) : null;
@@ -38,13 +45,12 @@ async function loadCompanyDetails() {
     document.getElementById('compFounder').innerHTML = await renderUserLink(founderId);
 
     const isCeo = (c.data !== undefined && c.data !== null) || (localStorage.getItem('oe_user_id') !== null && Number(localStorage.getItem('oe_user_id')) === ceoId);
-    const isStore = Number(c.type) === 2;
     const tabFac = document.getElementById('tabBtnFacilities'), tabStore = document.getElementById('tabBtnStore');
-    if (tabFac) tabFac.style.display = isStore ? 'none' : 'block';
+    if (tabFac) tabFac.style.display = isProd ? 'block' : 'none';
     if (tabStore) tabStore.style.display = isStore ? 'block' : 'none';
 
     if (isStore && typeof renderStorefront === 'function') renderStorefront(c, isCeo);
-    else if (!isStore && typeof renderFacilities === 'function') renderFacilities(c, isCeo);
+    else if (isProd && typeof renderFacilities === 'function') renderFacilities(c, isCeo);
 
     renderInventory(c);
     if (isCeo) {
