@@ -19,18 +19,22 @@ async function loadUsers() {
       return;
     }
 
-    tbody.innerHTML = users.map(u => `
-      <tr>
-        <td><strong>#${u.id}</strong></td>
-        <td><a href="/portfolio/?user=${u.id}" style="color: var(--primary); font-weight: 600;">${escapeHtml(u.username)}</a></td>
-        <td>${u.joined ? new Date(u.joined * 1000).toLocaleDateString() : '-'}</td>
-        <td>
-          ${u.active
-            ? '<span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3);">Active</span>'
-            : '<span class="badge" style="background: rgba(107, 114, 128, 0.15); color: #9ca3af; border: 1px solid rgba(107, 114, 128, 0.3);">Inactive</span>'}
-        </td>
-      </tr>
-    `).join('');
+    tbody.innerHTML = users.map(u => {
+      const joinedStr = u.joined ? new Date(u.joined * 1000).toLocaleDateString() : '';
+      const tooltip = `Citizen #${u.id}${joinedStr ? ` • Joined: ${joinedStr}` : ''}`;
+      return `
+        <tr>
+          <td><strong>#${u.id}</strong></td>
+          <td><a href="/portfolio/?user=${u.id}" class="user-link" title="${tooltip}" style="color: var(--primary); font-weight: 600;">${escapeHtml(u.username)}</a></td>
+          <td>${joinedStr || '-'}</td>
+          <td>
+            ${u.active
+              ? '<span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3);">Active</span>'
+              : '<span class="badge" style="background: rgba(107, 114, 128, 0.15); color: #9ca3af; border: 1px solid rgba(107, 114, 128, 0.3);">Inactive</span>'}
+          </td>
+        </tr>
+      `;
+    }).join('');
   } catch (err) {
     tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--danger);">${err.message}</td></tr>`;
   }
