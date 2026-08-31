@@ -11,16 +11,14 @@
   <main class="container">
     <div class="page-header">
       <div><h1 id="companyNameHeader">Company Profile</h1><p id="companyTypeSubtitle">Overview, operations, and inventory</p></div>
-      <div style="display: flex; gap: 8px;">
-        <button id="btnWorkShift" class="btn btn-primary">Work Shift</button>
-        <a href="/companies/" class="btn btn-secondary">&larr; Back</a>
-      </div>
+      <div style="display: flex; gap: 8px;"><button id="btnWorkShift" class="btn btn-primary">Work Shift</button><a href="/companies/" class="btn btn-secondary">&larr; Back</a></div>
     </div>
     <div id="alertBox" class="alert"></div>
 
     <div class="tabs">
       <button class="tab-btn active" onclick="switchCompanyTab('overview')">📊 Overview</button>
-      <button class="tab-btn" onclick="switchCompanyTab('facilities')">🏭 Facilities</button>
+      <button id="tabBtnFacilities" class="tab-btn" onclick="switchCompanyTab('facilities')">🏭 Facilities</button>
+      <button id="tabBtnStore" class="tab-btn" style="display: none;" onclick="switchCompanyTab('store')">🛒 Storefront</button>
       <button class="tab-btn" onclick="switchCompanyTab('inventory')">📦 Inventory</button>
       <button id="tabBtnCeo" class="tab-btn" style="display: none;" onclick="switchCompanyTab('ceo')">🛠️ CEO Controls</button>
     </div>
@@ -39,10 +37,7 @@
       <div class="card">
         <div class="card-header"><span class="card-title">Shareholder Cap Table</span></div>
         <div class="table-responsive">
-          <table>
-            <thead><tr><th>Share ID</th><th>Owner</th><th>Entity Type</th><th>Shares Owned</th><th>Ownership %</th></tr></thead>
-            <tbody id="shareholdersTableBody"><tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Loading shareholders...</td></tr></tbody>
-          </table>
+          <table><thead><tr><th>Share ID</th><th>Owner</th><th>Entity Type</th><th>Shares Owned</th><th>Ownership %</th></tr></thead><tbody id="shareholdersTableBody"><tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Loading shareholders...</td></tr></tbody></table>
         </div>
       </div>
     </div>
@@ -51,35 +46,35 @@
       <div class="card">
         <div class="card-header"><span class="card-title">🏭 Production Facilities</span></div>
         <div class="table-responsive">
-          <table>
-            <thead><tr><th>Facility</th><th>Recipe</th><th>Inputs &rarr; Output</th><th>Status</th><th>Action</th></tr></thead>
-            <tbody id="facilitiesTableBody"><tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Loading facilities...</td></tr></tbody>
-          </table>
+          <table><thead><tr><th>Facility</th><th>Recipe</th><th>Inputs &rarr; Output</th><th>Status</th><th>Action</th></tr></thead><tbody id="facilitiesTableBody"><tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Loading facilities...</td></tr></tbody></table>
         </div>
+      </div>
+    </div>
+
+    <div id="pane-store" class="tab-pane">
+      <div class="card">
+        <div class="card-header"><span class="card-title">🛒 Retail Storefront &amp; Listings</span></div>
+        <div id="storeListingsContent" style="padding: 4px 0;">Loading storefront...</div>
       </div>
     </div>
 
     <div id="pane-inventory" class="tab-pane">
+      <div id="inventoryLowWarning"></div>
       <div class="card">
         <div class="card-header"><span class="card-title">📦 Resource Inventory Stock</span></div>
         <div class="table-responsive">
-          <table>
-            <thead><tr><th>Resource ID</th><th>Resource Name</th><th>In-Stock Quantity</th><th>Action</th></tr></thead>
-            <tbody id="inventoryTableBody"><tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Loading inventory...</td></tr></tbody>
-          </table>
+          <table><thead><tr><th>Resource ID</th><th>Resource Name</th><th>In-Stock Quantity</th><th>Status</th><th>Action</th></tr></thead><tbody id="inventoryTableBody"><tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Loading inventory...</td></tr></tbody></table>
         </div>
       </div>
     </div>
 
-    <div id="pane-ceo" class="tab-pane">
-      <div id="ceoManagementCard" class="card" style="border-color: var(--primary);"></div>
-    </div>
+    <div id="pane-ceo" class="tab-pane"><div id="ceoManagementCard" class="card" style="border-color: var(--primary);"></div></div>
   </main>
 
   <oe-footer></oe-footer>
 
   <script src="/common/consts.js"></script><script src="/common/auth.js"></script><script src="/common/ui.js"></script>
   <script src="/common/navbar.js"></script><script src="/common/footer.js"></script>
-  <script src="/company/facilities.js"></script><script src="/company/ceo.js"></script><script src="/company/company.js"></script>
+  <script src="/company/facilities.js"></script><script src="/company/webstore.js"></script><script src="/company/ceo.js"></script><script src="/company/company.js"></script>
 </body>
 </html>

@@ -38,7 +38,14 @@ async function loadCompanyDetails() {
     document.getElementById('compFounder').innerHTML = await renderUserLink(founderId);
 
     const isCeo = (c.data !== undefined && c.data !== null) || (localStorage.getItem('oe_user_id') !== null && Number(localStorage.getItem('oe_user_id')) === ceoId);
-    if (typeof renderFacilities === 'function') renderFacilities(c, isCeo);
+    const isStore = Number(c.type) === 2;
+    const tabFac = document.getElementById('tabBtnFacilities'), tabStore = document.getElementById('tabBtnStore');
+    if (tabFac) tabFac.style.display = isStore ? 'none' : 'block';
+    if (tabStore) tabStore.style.display = isStore ? 'block' : 'none';
+
+    if (isStore && typeof renderStorefront === 'function') renderStorefront(c, isCeo);
+    else if (!isStore && typeof renderFacilities === 'function') renderFacilities(c, isCeo);
+
     renderInventory(c);
     if (isCeo) {
       document.getElementById('tabBtnCeo').style.display = 'block';
@@ -48,10 +55,19 @@ async function loadCompanyDetails() {
 }
 
 function renderInventory(c) {
-  const tbody = document.getElementById('inventoryTableBody');
+  const tbody = document.getElementById('inventoryTableBody'), warnBox = document.getElementById('inventoryLowWarning');
   if (!tbody) return;
   const inv = (c.data && c.data.inventory) ? c.data.inventory : (c.inventory || {}), resList = typeof RESOURCES !== 'undefined' ? RESOURCES : [{ id: 0, name: 'Food' }, { id: 1, name: 'Water' }, { id: 2, name: 'Grain' }, { id: 3, name: 'Electricity' }, { id: 4, name: 'Cement' }, { id: 5, name: 'Metal' }, { id: 6, name: 'RawOre' }];
-  tbody.innerHTML = resList.map(r => `<tr><td><code>#${r.id}</code></td><td><strong>${escapeHtml(r.name)}</strong></td><td><strong style="color: ${Number(inv[r.id] ?? inv[String(r.id)] ?? 0) > 0 ? 'var(--success)' : 'var(--text-muted)'};">${Number(inv[r.id] ?? inv[String(r.id)] ?? 0).toLocaleString()}</strong></td><td><a href="/market/?resource=${r.id}" class="btn btn-secondary btn-sm">Trade on Market &rarr;</a></td></tr>`).join('');
+  const lowItems = [];
+  tbody.innerHTML = resList.map(r => {
+    const qty = Number(inv[r.id] ?? inv[String(r.id)] ?? 0);
+    const isLow = qty < 100;
+    if (isLow) lowItems.push(`${r.name.replace(/Resource #\d+ \((.*)\)/, '$1')} (${qty})`);
+    const statusBadge = isLow ? `<span class="badge" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);">⚠️ Low (&lt;100)</span>` : '<span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">In Stock</span>';
+    return `<tr><td><code>#${r.id}</code></td><td><strong>${escapeHtml(r.name)}</strong></td><td><strong style="color: ${qty > 0 ? (isLow ? '#f87171' : 'var(--success)') : 'var(--text-muted)'};">${qty.toLocaleString()}</strong></td><td>${statusBadge}</td><td><a href="/market/?resource=${r.id}" class="btn btn-secondary btn-sm">Trade &rarr;</a></td></tr>`;
+  }).join('');
+
+  if (warnBox) warnBox.innerHTML = lowItems.length ? `<div class="alert alert-danger visible" style="margin-bottom: 16px;">⚠️ <strong>Low Stock Alert (&lt;100):</strong> ${lowItems.join(', ')}</div>` : '';
 }
 
 async function loadShareholders() {
