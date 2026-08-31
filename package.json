@@ -1,6 +1,6 @@
 {
   "name": "@oureconomy/frontend",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Static frontend client for OurEconomy",
   "scripts": {
     "sync:openapi": "bash tools/sync-openapi.sh"

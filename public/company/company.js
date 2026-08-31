@@ -1,5 +1,4 @@
-const urlParams = new URLSearchParams(window.location.search);
-const companyId = urlParams.get('id');
+const urlParams = new URLSearchParams(window.location.search), companyId = urlParams.get('id');
 
 function switchCompanyTab(tab) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -23,8 +22,7 @@ async function loadCompanyDetails() {
       fetch(`${BACKEND}/company?id=${companyId}`, { headers: token ? { 'Auth': token } : {} }),
       getUserMap()
     ]);
-    const data = await res.json();
-    const c = data.company || data;
+    const data = await res.json(), c = data.company || data;
     if (!c.name) return;
 
     document.getElementById('companyNameHeader').textContent = c.name;
@@ -39,8 +37,7 @@ async function loadCompanyDetails() {
     document.getElementById('compCeo').innerHTML = ceoId !== null ? `<a href="/portfolio/?user=${ceoId}" style="color: var(--primary); font-weight: 600;">${escapeHtml(userMap[ceoId] || `Citizen #${ceoId}`)}</a>` : '<span style="color: var(--text-muted);">None</span>';
     document.getElementById('compFounder').innerHTML = founderId !== null ? `<a href="/portfolio/?user=${founderId}" style="color: var(--primary); font-weight: 600;">${escapeHtml(userMap[founderId] || `Citizen #${founderId}`)}</a>` : '<span style="color: var(--text-muted);">None</span>';
 
-    renderFacilities(c);
-    renderInventory(c);
+    renderFacilities(c); renderInventory(c);
 
     const isCeo = (c.data !== undefined && c.data !== null) || (localStorage.getItem('oe_user_id') !== null && Number(localStorage.getItem('oe_user_id')) === ceoId);
     if (isCeo) {
@@ -67,26 +64,16 @@ function renderInventory(c) {
   if (!tbody) return;
   const inv = (c.data && c.data.inventory) ? c.data.inventory : (c.inventory || {});
   const resList = typeof RESOURCES !== 'undefined' ? RESOURCES : [{ id: 0, name: 'Food' }, { id: 1, name: 'Water' }, { id: 2, name: 'Grain' }, { id: 3, name: 'Electricity' }, { id: 4, name: 'Cement' }, { id: 5, name: 'Metal' }, { id: 6, name: 'RawOre' }];
-  tbody.innerHTML = resList.map(r => {
-    const qty = Number(inv[r.id] ?? inv[String(r.id)] ?? 0);
-    return `<tr><td><code>#${r.id}</code></td><td><strong>${escapeHtml(r.name)}</strong></td><td><strong style="color: ${qty > 0 ? 'var(--success)' : 'var(--text-muted)'};">${qty.toLocaleString()}</strong></td><td><a href="/market/?resource=${r.id}" class="btn btn-secondary btn-sm">Trade on Market &rarr;</a></td></tr>`;
-  }).join('');
+  tbody.innerHTML = resList.map(r => `<tr><td><code>#${r.id}</code></td><td><strong>${escapeHtml(r.name)}</strong></td><td><strong style="color: ${Number(inv[r.id] ?? inv[String(r.id)] ?? 0) > 0 ? 'var(--success)' : 'var(--text-muted)'};">${Number(inv[r.id] ?? inv[String(r.id)] ?? 0).toLocaleString()}</strong></td><td><a href="/market/?resource=${r.id}" class="btn btn-secondary btn-sm">Trade on Market &rarr;</a></td></tr>`).join('');
 }
 
 async function loadShareholders() {
   const tbody = document.getElementById('shareholdersTableBody');
   try {
-    const [res, userMap, compMap] = await Promise.all([
-      fetch(`${BACKEND}/company/shareholders?id=${companyId}`),
-      getUserMap(),
-      getCompanyMap()
-    ]);
+    const [res, userMap, compMap] = await Promise.all([fetch(`${BACKEND}/company/shareholders?id=${companyId}`), getUserMap(), getCompanyMap()]);
     const data = await res.json(), list = data.shareholders || [];
     if (!list.length) return tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">No recorded shareholders</td></tr>';
-    tbody.innerHTML = list.map(s => {
-      const ownerLabel = s.owner_user ? `<a href="/portfolio/?user=${s.owner_id}" style="color: var(--primary); font-weight: 600;">${escapeHtml(userMap[s.owner_id] || `Citizen #${s.owner_id}`)}</a>` : `<a href="/company/?id=${s.owner_id}" style="color: var(--accent); font-weight: 600;">${escapeHtml(compMap[s.owner_id] || `Company #${s.owner_id}`)}</a>`;
-      return `<tr><td>#${s.share_id}</td><td>${ownerLabel}</td><td>${s.owner_user ? 'Citizen' : 'Company'}</td><td>${Number(s.quantity).toLocaleString()}</td><td><strong>${s.percentage}%</strong></td></tr>`;
-    }).join('');
+    tbody.innerHTML = list.map(s => `<tr><td>#${s.share_id}</td><td>${s.owner_user ? `<a href="/portfolio/?user=${s.owner_id}" style="color: var(--primary); font-weight: 600;">${escapeHtml(userMap[s.owner_id] || `Citizen #${s.owner_id}`)}</a>` : `<a href="/company/?id=${s.owner_id}" style="color: var(--accent); font-weight: 600;">${escapeHtml(compMap[s.owner_id] || `Company #${s.owner_id}`)}</a>`}</td><td>${s.owner_user ? 'Citizen' : 'Company'}</td><td>${Number(s.quantity).toLocaleString()}</td><td><strong>${s.percentage}%</strong></td></tr>`).join('');
   } catch (err) { tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--danger);">${err.message}</td></tr>`; }
 }
 
@@ -97,8 +84,11 @@ function setupWorkShift() {
     try {
       const res = await fetch(`${BACKEND}/company/work`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Auth': token }, body: JSON.stringify({ company_id: Number(companyId) }) });
       const data = await res.json();
-      if (data.wage_paid !== undefined) { showAlert(`Shift complete! Paid wage: $${data.wage_paid}`, 'success'); loadCompanyDetails(); }
-      else showAlert(data.message || data.status || 'Work shift failed', 'danger');
+      if (data.wage_paid !== undefined || data.status === 'Success') {
+        const prod = data.production ? ` (${data.production.facility}: +${data.production.quantity})` : '';
+        showAlert(`Shift complete! Paid wage: $${data.wage_paid || 0}${prod}`, 'success');
+        loadCompanyDetails(); if (typeof renderAuthNav === 'function') renderAuthNav();
+      } else showAlert(data.message || data.status || 'Work shift failed', 'danger');
     } catch (e) { showAlert(e.message, 'danger'); }
   });
 }
