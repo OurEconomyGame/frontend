@@ -88,11 +88,14 @@ function setupWorkShift() {
     try {
       const res = await fetch(`${BACKEND}/company/work`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Auth': token }, body: JSON.stringify({ company_id: Number(companyId) }) });
       const data = await res.json();
-      if (data.wage_paid !== undefined || data.status === 'Success') {
+      if (data.wage_paid !== undefined || data.status === 'Success' || data.status === 'success') {
         const prod = data.production ? ` (${data.production.facility}: +${data.production.quantity})` : '';
         showAlert(`Shift complete! Paid wage: $${data.wage_paid || 0}${prod}`, 'success');
         loadCompanyDetails(); if (typeof renderAuthNav === 'function') renderAuthNav();
-      } else showAlert(data.message || data.status || 'Work shift failed', 'danger');
+      } else {
+        const errMsg = data.error || data.message || (data.status && !data.status.toLowerCase().includes('iff') ? data.status : '') || 'Work shift failed';
+        showAlert(errMsg, 'danger');
+      }
     } catch (e) { showAlert(e.message, 'danger'); }
   });
 }
