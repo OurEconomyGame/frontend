@@ -49,9 +49,9 @@
       <div class="card">
         <div class="card-header"><span class="card-title">🚫 Cancel Order / Refund Escrow</span></div>
         <form id="cancelForm">
-          <div class="form-group"><label>Trading Entity</label><select id="cancelCompId" class="form-control"><option value="">Personal Orders</option></select></div>
-          <div class="grid-2"><div class="form-group"><label>Order ID (Buy)</label><input type="number" id="cancelOrderId" class="form-control" placeholder="Order ID" /></div><div class="form-group"><label>Offer ID (Sell)</label><input type="number" id="cancelOfferId" class="form-control" placeholder="Offer ID" /></div></div>
-          <button type="submit" class="btn btn-secondary" style="width: 100%; margin-top: 8px;">Cancel & Release Escrow</button>
+          <div class="form-group"><label>Trading Entity</label><select id="cancelCompId" class="form-control"><option value="">Personal Orders (Sink)</option></select></div>
+          <div class="form-group"><label>Active Resting Orders &amp; Offers</label><select id="cancelOrderSelect" class="form-control" disabled><option value="">No active resting orders</option></select></div>
+          <button type="submit" id="btnCancelOrder" class="btn btn-secondary" style="width: 100%; margin-top: 8px;" disabled>Cancel Selected &amp; Release Escrow</button>
         </form>
       </div>
     </div>
