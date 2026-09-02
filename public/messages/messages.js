@@ -3,8 +3,8 @@ let activeTargetUserId = urlParams.get('to') || urlParams.get('user') || urlPara
 
 document.addEventListener('DOMContentLoaded', async () => {
   renderAuthNav();
-  const uid = localStorage.getItem('oe_user_id'), isAdmin = uid !== null && Number(uid) === 0;
-  if (isAdmin) {
+  const user = await getCurrentUser();
+  if (user && user.id === 0) {
     const adminBar = document.getElementById('adminMailboxBar');
     if (adminBar) adminBar.style.display = 'block';
     document.getElementById('btnAdminInspect')?.addEventListener('click', () => loadInbox(Number(document.getElementById('adminTargetUserId')?.value || 0)));
@@ -26,18 +26,11 @@ async function loadInbox(targetId = null) {
   const token = getAuthToken(), tbody = document.getElementById('inboxTableBody');
   if (!token) return tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted);"><a href="/login/" style="color: var(--primary);">Login</a> to view messages.</td></tr>';
   tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Loading messages...</td></tr>';
-
-  let url = `${BACKEND}/message/receive`;
-  if (targetId !== null && targetId !== undefined) url += `?id=${targetId}`;
-
+  const url = `${BACKEND}/message/receive${(targetId !== null && targetId !== undefined) ? `?id=${targetId}` : ''}`;
   try {
     const res = await fetch(url, { headers: { 'Auth': token } }), data = await res.json(), msgs = Array.isArray(data.messages) ? data.messages : [];
     if (!msgs.length) return tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">${targetId !== null ? `No messages for Citizen #${targetId}.` : 'No messages received yet.'}</td></tr>`;
-
-    const rows = await Promise.all(msgs.map(async (m) => {
-      const senderLink = await renderUserLink(m.sender_id);
-      return `<tr><td>${senderLink}</td><td><strong>${escapeHtml(m.subject || '(No Subject)')}</strong></td><td><button class="btn btn-secondary btn-sm" onclick="viewMessage(${m.id})">Read</button> <button class="btn btn-danger btn-sm" onclick="deleteMessage(${m.id})">🗑️</button></td></tr>`;
-    }));
+    const rows = await Promise.all(msgs.map(async (m) => `<tr><td>${await renderUserLink(m.sender_id)}</td><td><strong>${escapeHtml(m.subject || '(No Subject)')}</strong></td><td><button class="btn btn-secondary btn-sm" onclick="viewMessage(${m.id})">Read</button> <button class="btn btn-danger btn-sm" onclick="deleteMessage(${m.id})">🗑️</button></td></tr>`));
     tbody.innerHTML = rows.join('');
   } catch (err) { tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--danger);">${err.message}</td></tr>`; }
 }
@@ -48,15 +41,12 @@ window.viewMessage = async function(msgId) {
   try {
     const res = await fetch(`${BACKEND}/message/read?id=${msgId}`, { headers: { 'Auth': token } }), data = await res.json(), m = data.message;
     if (!m) return showAlert(data.message || 'Failed to load message', 'danger');
-
     currentViewingMsgId = m.id; reader.style.display = 'block';
     document.getElementById('readSubject').textContent = m.subject || '(No Subject)';
     document.getElementById('readSender').innerHTML = await renderUserLink(m.sender_id);
     document.getElementById('readContent').textContent = m.content || '';
     document.getElementById('btnReply').onclick = () => {
-      document.getElementById('msgReceiverId').value = m.sender_id;
-      document.getElementById('msgSubject').value = `Re: ${m.subject || ''}`;
-      document.getElementById('msgContent').focus();
+      document.getElementById('msgReceiverId').value = m.sender_id; document.getElementById('msgSubject').value = `Re: ${m.subject || ''}`; document.getElementById('msgContent').focus();
     };
     reader.scrollIntoView({ behavior: 'smooth' });
   } catch (err) { showAlert(err.message, 'danger'); }
@@ -69,8 +59,7 @@ window.deleteMessage = async function(msgId) {
   if (!token) return showAlert('Please login to delete messages.', 'danger');
   if (!confirm(`Delete message #${msgId}?`)) return;
   try {
-    const res = await fetch(`${BACKEND}/message/delete`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Auth': token }, body: JSON.stringify({ message_id: msgId }) });
-    const data = await res.json();
+    const res = await fetch(`${BACKEND}/message/delete`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Auth': token }, body: JSON.stringify({ message_id: msgId }) }), data = await res.json();
     if (data.status === 'Success' || data.deleted) {
       showAlert(`Message #${msgId} deleted.`, 'success');
       if (currentViewingMsgId === msgId) closeReader();
@@ -84,10 +73,8 @@ async function handleSendMessage(e) {
   const token = getAuthToken();
   if (!token) return showAlert('Please log in to send messages.', 'danger');
   const receiverId = Number(document.getElementById('msgReceiverId').value), subject = document.getElementById('msgSubject').value.trim(), content = document.getElementById('msgContent').value.trim();
-
   try {
-    const res = await fetch(`${BACKEND}/message/send`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Auth': token }, body: JSON.stringify({ receiver_id: receiverId, subject, content }) });
-    const data = await res.json();
+    const res = await fetch(`${BACKEND}/message/send`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Auth': token }, body: JSON.stringify({ receiver_id: receiverId, subject, content }) }), data = await res.json();
     if (data.status === 'Success' || data.id !== undefined) {
       showAlert(`Message sent to Citizen #${receiverId}!`, 'success');
       document.getElementById('msgSubject').value = ''; document.getElementById('msgContent').value = '';

@@ -1,16 +1,13 @@
 document.addEventListener('DOMContentLoaded', async () => {
   renderAuthNav();
-  const token = getAuthToken(), uid = localStorage.getItem('oe_user_id');
-  if (!token || Number(uid) !== 0) {
+  const token = getAuthToken(), user = await getCurrentUser(true);
+  if (!token || !user || user.id !== 0) {
     showAlert('Access denied. Administrator privileges required.', 'danger');
-    setTimeout(() => { window.location.href = '/'; }, 1500);
-    return;
+    return setTimeout(() => { window.location.href = '/'; }, 1200);
   }
   const sinkRes = document.getElementById('sinkResource');
   if (sinkRes && typeof RESOURCES !== 'undefined') sinkRes.innerHTML = RESOURCES.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
-
-  setupAdminListeners(token);
-  loadActiveSinks(token);
+  setupAdminListeners(token); loadActiveSinks(token);
 });
 
 function setupAdminListeners(token) {
