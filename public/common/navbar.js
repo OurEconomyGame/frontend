@@ -19,6 +19,7 @@ class OENavbar extends HTMLElement {
           <li><a href="/messages/" class="${page === 'messages' ? 'active' : ''}">Messages</a></li>
           <li><a href="/users/" class="${page === 'users' ? 'active' : ''}">Citizens</a></li>
           <li><a href="/info/" class="${page === 'info' ? 'active' : ''}">Info</a></li>
+          <li><a href="/admin/" id="navAdminLink" class="${page === 'admin' ? 'active' : ''}" style="display: none; color: var(--accent); font-weight: 600;">Admin</a></li>
         </ul>
         <div class="nav-right">
           <button id="btnThemeToggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">🌓</button>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - OurEconomy</title><link rel="stylesheet" href="/css/style.css">
+  <script src="/common/theme.js"></script>
+</head>
+<body>
+  <oe-navbar current-page="admin"></oe-navbar>
+
+  <main class="container">
+    <div class="page-header">
+      <div><h1 style="color: var(--accent);">👑 Central Administration</h1><p>System tools, currency minting, market liquidity sinks, and daily resets.</p></div>
+      <button id="btnDailyReset" class="btn btn-secondary" style="border-color: var(--accent);">🔄 Trigger Global Daily Reset</button>
+    </div>
+    <div id="alertBox" class="alert"></div>
+
+    <div class="grid-2" style="margin-bottom: 24px;">
+      <div class="card">
+        <div class="card-header"><span class="card-title" style="color: var(--accent);">⚡ Cash Minting &amp; Capital Injection</span></div>
+        <form id="formCashMint">
+          <div class="grid-2">
+            <div class="form-group"><label>Target Entity Type</label><select id="injectTargetType" class="form-control"><option value="user">Citizen (User ID)</option><option value="company">Company (Company ID)</option></select></div>
+            <div class="form-group"><label>Target ID</label><input type="number" id="injectTargetId" class="form-control" value="0" min="0" required /></div>
+          </div>
+          <div class="form-group"><label>Injection Amount ($)</label><input type="number" id="injectAmount" class="form-control" placeholder="10000" min="1" required /></div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Mint &amp; Inject Cash</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title" style="color: var(--accent);">🌊 Market Liquidity Sinks</span></div>
+        <form id="sinkTradeForm">
+          <div class="grid-2">
+            <div class="form-group"><label>Commodity</label><select id="sinkResource" class="form-control"></select></div>
+            <div class="form-group"><label>Quantity</label><input type="number" id="sinkQuantity" class="form-control" min="1" required placeholder="50" /></div>
+          </div>
+          <div class="form-group"><label>Unit Price ($)</label><input type="number" id="sinkPrice" class="form-control" min="0.01" step="0.01" required placeholder="5.00" /></div>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" id="btnSinkBuy" class="btn btn-success" style="flex: 1;">Place Buy Sink</button>
+            <button type="button" id="btnSinkSell" class="btn btn-danger" style="flex: 1;">Place Sell Sink</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 24px;">
+      <div class="card-header"><span class="card-title">🚫 Cancel Active Admin Sinks</span></div>
+      <form id="cancelSinkForm" style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;">
+        <div class="form-group" style="flex: 1; min-width: 260px; margin-bottom: 0;">
+          <label>Active Resting Sink Orders &amp; Offers</label>
+          <select id="cancelSinkSelect" class="form-control" disabled><option value="">No active resting sinks</option></select>
+        </div>
+        <button type="submit" id="btnCancelSink" class="btn btn-secondary" style="height: 38px;" disabled>Cancel Sink &amp; Release Escrow</button>
+      </form>
+    </div>
+  </main>
+
+  <oe-footer></oe-footer>
+
+  <script src="/common/consts.js"></script><script src="/common/auth.js"></script><script src="/common/ui.js"></script>
+  <script src="/common/navbar.js"></script><script src="/common/footer.js"></script>
+  <script src="/admin/admin.js"></script>
+</body>
+</html>
