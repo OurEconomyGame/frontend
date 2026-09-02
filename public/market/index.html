@@ -36,20 +36,20 @@
 
     <div class="grid-2">
       <div class="card">
-        <div class="card-header"><span class="card-title">💼 Place Limit Order / Consumer Sink</span></div>
+        <div class="card-header"><span class="card-title" id="tradeCardTitle">💼 Place Limit Order</span></div>
         <form id="tradeForm">
           <div class="grid-2">
-            <div class="form-group"><label>Trading Entity</label><select id="tradeCompId" class="form-control"><option value="">Personal Consumer Sink (My Wallet)</option></select></div>
+            <div class="form-group"><label>Trading Entity</label><select id="tradeCompId" class="form-control"><option value="">Select Company...</option></select></div>
             <div class="form-group"><label>Commodity</label><select id="tradeResource" class="form-control"></select></div>
           </div>
           <div class="grid-2"><div class="form-group"><label>Quantity</label><input type="number" id="tradeQuantity" class="form-control" min="1" required placeholder="10" /></div><div class="form-group"><label>Unit Price ($)</label><input type="number" id="tradePrice" class="form-control" min="0.01" step="0.01" required placeholder="5.00" /></div></div>
-          <div style="display: flex; gap: 10px; margin-top: 8px;"><button type="button" id="btnMarketBuy" class="btn btn-success" style="flex: 1;">Place Buy Order / Sink</button><button type="button" id="btnMarketSell" class="btn btn-danger" style="flex: 1;">Place Sell Offer</button></div>
+          <div style="display: flex; gap: 10px; margin-top: 8px;"><button type="button" id="btnMarketBuy" class="btn btn-success" style="flex: 1;">Place Buy Order</button><button type="button" id="btnMarketSell" class="btn btn-danger" style="flex: 1;">Place Sell Offer</button></div>
         </form>
       </div>
       <div class="card">
         <div class="card-header"><span class="card-title">🚫 Cancel Order / Refund Escrow</span></div>
         <form id="cancelForm">
-          <div class="form-group"><label>Trading Entity</label><select id="cancelCompId" class="form-control"><option value="">Personal Orders (Sink)</option></select></div>
+          <div class="form-group"><label>Trading Entity</label><select id="cancelCompId" class="form-control"><option value="">Select Company...</option></select></div>
           <div class="form-group"><label>Active Resting Orders &amp; Offers</label><select id="cancelOrderSelect" class="form-control" disabled><option value="">No active resting orders</option></select></div>
           <button type="submit" id="btnCancelOrder" class="btn btn-secondary" style="width: 100%; margin-top: 8px;" disabled>Cancel Selected &amp; Release Escrow</button>
         </form>
